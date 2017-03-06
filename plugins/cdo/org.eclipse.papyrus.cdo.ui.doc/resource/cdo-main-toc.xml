@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<toc label="CDO Model Repository" link_to="../org.eclipse.papyrus.infra.doc/toc.xml#PapyrusTasks">
+   <topic href="target/generated-eclipse-help/start/cdo-start.html" label="Working with CDO Model Repositories">
+      <link toc="target/generated-eclipse-help/start/cdo-start-toc.xml"/>
+      <link toc="target/generated-eclipse-help/team/cdo-team-toc.xml"/>
+      <link toc="target/generated-eclipse-help/bugs/cdo-bugs-toc.xml"/>
+      <anchor id="cdo-additions"/>
+   </topic>
+	
+</toc>

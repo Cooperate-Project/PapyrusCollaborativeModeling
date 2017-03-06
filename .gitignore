@@ -1,0 +1,15 @@
+bin/
+target/
+sonarlint/
+*.java._trace
+*.pyc
+.DS_Store
+*.xtendbin
+*.gmfgen.uml
+
+# Workspace metadata folder created by Oomph when launching tests.
+tests/**/.metadata/
+
+#intellij files
+.idea/
+*.iml

@@ -1,0 +1,145 @@
+target "Collaborative Modeling Target Platform"
+
+location "http://download.eclipse.org/releases/oxygen/" eclipse-oxygen {
+ org.eclipse.platform.feature.group lazy
+ org.eclipse.rcp.feature.group lazy
+ org.eclipse.jdt.feature.group lazy
+ org.eclipse.equinox.p2.discovery.feature.feature.group lazy
+ org.eclipse.equinox.executable.feature.group lazy
+ 
+ org.eclipse.net4j.db.feature.group lazy
+ org.eclipse.net4j.db.h2.feature.group lazy
+ org.eclipse.emf.workspace.feature.group lazy
+ org.apache.commons.lang lazy
+ org.eclipse.net4j.ui lazy
+ org.apache.log4j lazy
+ 
+ org.eclipse.sdk.feature.group lazy
+ 
+ org.eclipse.papyrus.sdk.feature.feature.group lazy
+ org.eclipse.papyrus.infra.gmfdiag.feature.feature.group lazy
+ org.eclipse.papyrus.infra.services.feature.feature.group lazy
+}
+
+location "https://hudson.eclipse.org/papyrus/job/Papyrus-Master-Developer/lastSuccessfulBuild/artifact/repository/" papyrus-master-extra {
+	org.eclipse.papyrus.junit.utils lazy
+	org.eclipse.papyrus.junit.framework lazy
+}
+
+// Temporary fix as the latest Milestone containing the recent toolsmiths changes is not yet published
+location "https://hudson.eclipse.org/papyrus/job/Papyrus-Master/lastSuccessfulBuild/artifact/repository/" papyrus-master {
+	org.eclipse.papyrus.views.properties.toolsmiths lazy
+	org.eclipse.papyrus.views.properties.model.xwt lazy
+}
+
+
+// CDO
+
+//updateFrom("EMF CDO",0) 
+
+location cdo "http://download.eclipse.org/modeling/emf/cdo/drops/S20170131-0606" {
+	org.eclipse.net4j.feature.group lazy
+	org.eclipse.emf.cdo.server.feature.group lazy
+	org.eclipse.emf.cdo.dawn.feature.group lazy
+	org.eclipse.emf.cdo.feature.group lazy
+	org.eclipse.emf.cdo.server.db.feature.group lazy
+}
+//updateFrom("EMF (Core)",0)
+
+location emf "http://download.eclipse.org/modeling/emf/emf/updates/2.13milestones/" {
+	org.eclipse.emf.sdk.feature.group lazy
+}
+
+//updateFrom("EMF TRANSACTION",0)
+
+location emfTransaction "http://download.eclipse.org/modeling/emf/transaction/updates/releases" {
+	org.eclipse.emf.transaction.sdk.feature.group lazy
+}
+
+//updateFrom("EMF VALIDATION",0)
+
+location emfValidation "http://download.eclipse.org/modeling/emf/validation/updates/releases" {
+	org.eclipse.emf.validation.sdk.feature.group lazy
+}
+
+//updateFrom("GMF Notation",0)
+
+location gmfNotation "http://download.eclipse.org/modeling/gmp/gmf-notation/updates/releases" {
+	org.eclipse.gmf.runtime.notation.sdk.feature.group lazy
+}
+
+//updateFrom("GMF Runtime",0) 
+
+location gmfRuntime "http://download.eclipse.org/modeling/gmp/gmf-runtime/updates/releases" {
+	org.eclipse.gmf.runtime.sdk.feature.group lazy
+}
+
+//updateFrom("GEF",0)
+
+location gef "http://download.eclipse.org/tools/gef/updates/legacy/releases/4.0.0_gef-master_1952" {
+	org.eclipse.gef.feature.group lazy
+	org.eclipse.zest.layouts lazy
+}
+
+//updateFrom("MDT UML2",0) 
+
+location uml "http://download.eclipse.org/modeling/mdt/uml2/updates/5.3milestones" {
+	org.eclipse.uml2.sdk.feature.group lazy
+}
+
+//updateFrom("Eclipse OCL 6.3",0) 
+
+location ocl "http://download.eclipse.org/modeling/mdt/ocl/updates/interim/6.3.0" {
+	org.eclipse.ocl.examples.classic.feature.group lazy
+	org.eclipse.ocl.examples.feature.group lazy
+}
+
+//manualUpdate
+
+location orbit "http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository" {
+	org.apache.commons.io lazy
+	org.apache.commons.io.source lazy
+}
+
+//updateFrom("XWT",0)
+
+location xwt "http://download.eclipse.org/xwt/release-1.2.0" {
+	org.eclipse.xwt.feature.feature.group lazy
+}
+
+//updateFrom("QVT Operational",0)
+
+location qvto "http://download.eclipse.org/mmt/qvto/updates/milestones/3.7.0/S201702010226" {
+	org.eclipse.m2m.qvt.oml.sdk.feature.group lazy
+}
+
+//updateFrom("WebTools",0) 
+
+location webtools "http://download.eclipse.org/webtools/downloads/drops/R3.9.0/S-3.9.0M5-20170201000249/repository/" {
+	org.eclipse.wst.xml_ui.feature.feature.group lazy
+}
+
+//manualUpdate
+
+location xtext "http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.10.0/" {
+	com.google.inject lazy
+	org.eclipse.xtext.sdk.feature.group lazy
+	org.eclipse.xtend.sdk.feature.group lazy
+	org.eclipse.xtext.redist.feature.group lazy
+}
+
+//updateFrom("EMF COMPARE",0) 
+
+location emfCompare "http://download.eclipse.org/modeling/emf/compare/updates/milestones/3.3/S201701271543" {
+	org.eclipse.emf.compare.diagram.gmf.source.feature.group lazy
+	org.eclipse.emf.compare.source.feature.group lazy
+	org.eclipse.emf.compare.uml2.source.feature.group lazy
+	org.eclipse.emf.compare.edit lazy
+	org.eclipse.emf.compare.rcp lazy
+}
+
+//updateFrom("Graphiti",0)
+
+location graphiti "http://download.eclipse.org/graphiti/updates/milestones/S-0.14.0M5-201701312008/" //
+
+// Revision Tool

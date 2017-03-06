@@ -1,0 +1,1 @@
+This file is used by the com.mycila plugin during builds to check if all the contributed classes have the sample header

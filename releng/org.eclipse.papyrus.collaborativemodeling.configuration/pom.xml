@@ -1,0 +1,190 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- Collaborative Modeling depends on generic Papyrus component POM file -->
+	<parent>
+		<groupId>org.eclipse.papyrus.components</groupId>
+		<artifactId>org.eclipse.papyrus.components.parent</artifactId>
+		<version>0.0.21</version>
+		<relativePath></relativePath>
+	</parent>
+	
+	<!-- Collaborative Modeling root POM: general information -->
+	<groupId>org.eclipse.papyrus.collaborativemodeling</groupId>
+	<artifactId>org.eclipse.papyrus.collaborativemodeling.releng.configuration</artifactId>
+	<version>0.7.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>Collaborative Modeling</name>
+	<description>Papyrus Collaborative Modeling</description>
+	<inceptionYear>2017</inceptionYear>
+
+	<!-- Collaborative Modeling properties -->
+	<properties>
+		<component.shortname>collaborativemodeling</component.shortname>
+		<component.hudson.tabname>Collaborative Modeling</component.hudson.tabname>
+		<component.fullartifactId>org.eclipse.papyrus.collaborativemodeling</component.fullartifactId>
+		<component.bugzilla.name>Collaborative Modeling</component.bugzilla.name>
+		<component.package.rootname>org.eclipse.papyrus.collaborativemodeling</component.package.rootname>
+		<component.apibaseline.url>http://download.eclipse.org/modeling/mdt/papyrus/components/collaborativemodeling/</component.apibaseline.url>
+		<eclipse.targetrelease>oxygen</eclipse.targetrelease>
+		<target.version>0.7.0-SNAPSHOT</target.version>
+	</properties>
+
+	<!-- Collaborative Modeling CI system-->
+	<ciManagement>
+		<system>Hudson</system>
+		<url>https://hudson.eclipse.org/papyrus/view/${component.hudson.tabname}/</url>
+	</ciManagement>
+	
+	<!-- Collaborative Modeling Bugzilla -->
+	<issueManagement>
+		<url>https://bugs.eclipse.org/bugs/buglist.cgi?product=Papyrus&amp;component=${component.bugzilla.name}</url>
+		<system>Bugzilla</system>
+	</issueManagement>
+	
+	<distributionManagement>
+		<site>
+			<id>git.eclipse.org.server</id>
+			<url>scm:git:https://git.eclipse.org/gitroot/www.eclipse.org/papyrus/components/${component.shortname}</url>
+		</site>
+	</distributionManagement>
+
+	<scm>
+		<url>https://git.eclipse.org/c/papyrus/org.eclipse.papyrus-${component.shortname}.git</url>
+		<connection>scm:git:git://git.eclipse.org/gitroot/papyrus/org.eclipse.papyrus-${component.shortname}.git</connection>
+	</scm>
+	
+	<!-- Collaborative Modeling Developpers -->
+	<developers>
+		<developer>
+			<name>Patrick Tessier</name>
+			<organization>CEA Tech LIST</organization>
+			<organizationUrl>http://www-list.cea.fr/</organizationUrl>
+			<id>ptessier</id>
+		</developer>
+		<developer>
+			<name>Xavier Zeitoun</name>
+			<organization>CEA Tech LIST</organization>
+			<organizationUrl>http://www-list.cea.fr/</organizationUrl>
+			<id>xzeitoun</id>
+		</developer>
+	</developers>
+	
+	<!-- Collaborative Modeling Contributors -->
+	<contributors>
+		<contributor>
+			<name></name>
+		</contributor>
+	</contributors>	
+
+	<!-- Location to resolve Papyrus tools -->
+	<repositories>
+		<repository>
+			<id>pap.repo.eclipse.org</id>
+			<name>Papyrus Repository - Releases</name>
+			<url>https://repo.eclipse.org/content/repositories/papyrus-releases/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>paps.repo.eclipse.org</id>
+			<name>Papyrus Repository - Snapshots</name>
+			<url>https://repo.eclipse.org/content/repositories/papyrus-snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<!-- Location to find out maven plugins -->
+		<pluginRepository>
+			<id>org.eclipse.cbi.maven.plugins</id>
+			<name>Eclipse CBI</name>
+			<url>https://repo.eclipse.org/content/repositories/cbi-releases/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+		
+	</pluginRepositories>
+	
+	<build>
+    	<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<environments>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+					</environments>
+					<target>
+						<artifact>
+							<groupId>org.eclipse.papyrus.collaborativemodeling</groupId>
+							<artifactId>org.eclipse.papyrus.collaborativemodeling.targetplatform</artifactId>
+							<version>0.7.0-SNAPSHOT</version>
+						</artifact>
+					</target>
+				</configuration>
+			</plugin>
+	
+	     <plugin>
+	        <groupId>com.mycila</groupId>
+	        <artifactId>license-maven-plugin</artifactId>
+	        <version>3.0.rc1</version>
+	        <executions>
+	          <execution>
+	            <configuration>
+	              <header>${session.executionRootDirectory}/tests/header/header.epl.txt</header>
+	            </configuration>
+	          </execution>
+	        </executions>
+	      </plugin>
+    	</plugins>  
+	</build>
+	
+	<profiles>
+	<profile>
+			<id>eclipse-sign</id>
+			<activation>
+				<property>
+					<name>Sign</name>
+					<value>true</value>
+				</property>
+			</activation>
+		</profile>
+		<profile>
+			<id>eclipse-pack</id>
+			<activation>
+				<property>
+					<name>!skipPack</name>
+				</property>
+			</activation>
+		</profile>
+	
+	</profiles>
+</project>

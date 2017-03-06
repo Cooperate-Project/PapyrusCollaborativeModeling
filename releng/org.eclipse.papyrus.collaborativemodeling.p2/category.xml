@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="plugins/cdo/org.eclipse.papyrus.extra.cdo.feature_1.2.0.qualifier.jar" id="org.eclipse.papyrus.extra.cdo.feature" version="1.2.0.qualifier">
+      <category name="org.eclipse.papyrus.collaborativemodeling"/>
+   </feature>
+   
+   <feature url="plugins/revision/org.eclipse.papyrus.revisiontool.feature_0.7.0.qualifier.jar" id="org.eclipse.papyrus.revisiontool.feature" version="0.7.0.qualifier">
+      <category name="org.eclipse.papyrus.collaborativemodeling"/>
+   </feature>
+   
+   <category-def name="org.eclipse.papyrus.collaborativemodeling" label="Collaborative Modeling">
+      <description>
+         Papyrus Tools for Collaborative Modeling
+      </description>
+   </category-def>
+</site>

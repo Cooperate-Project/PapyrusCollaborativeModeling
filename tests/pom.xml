@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- Parent POM (i.e., root POM of Requirements project) -->
+	<parent>
+		<groupId>org.eclipse.papyrus.requirements</groupId>
+		<artifactId>org.eclipse.papyrus.requirements.root</artifactId>
+		<version>0.0.7-SNAPSHOT</version>
+	</parent>
+
+	<!-- POM Description -->
+	<artifactId>org.eclipse.papyrus.requirements.tests</artifactId>
+	<packaging>pom</packaging>
+	<name>Requirements Tests (Tests folder)</name>
+
+	<!-- Modules to build -->
+	<modules>	
+	
+	</modules>
+
+</project>
