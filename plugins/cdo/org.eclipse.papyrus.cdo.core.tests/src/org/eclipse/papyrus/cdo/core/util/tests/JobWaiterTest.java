@@ -38,8 +38,7 @@ import com.google.common.collect.Lists;
  */
 public class JobWaiterTest {
 
-	private Stopwatch watch = new Stopwatch();
-
+	private Stopwatch watch = Stopwatch.createUnstarted();
 	private List<TestJob> jobsToClean = Lists.newArrayListWithExpectedSize(1);
 
 	@Test
@@ -51,7 +50,7 @@ public class JobWaiterTest {
 		watch.stop();
 
 		assertThat(done, is(true));
-		assertThat(watch.elapsedTime(TimeUnit.SECONDS), lessThanOrEqualTo(3L));
+		assertThat(watch.elapsed(TimeUnit.SECONDS), lessThanOrEqualTo(3L));
 	}
 
 	@Test
@@ -65,7 +64,7 @@ public class JobWaiterTest {
 		watch.stop();
 
 		assertThat(done, is(true));
-		assertThat(watch.elapsedTime(TimeUnit.SECONDS), lessThanOrEqualTo(3L));
+		assertThat(watch.elapsed(TimeUnit.SECONDS), lessThanOrEqualTo(3L));
 	}
 
 	@Test
@@ -77,7 +76,7 @@ public class JobWaiterTest {
 		watch.stop();
 
 		assertThat(done, is(false));
-		assertThat(watch.elapsedTime(TimeUnit.SECONDS), lessThan(5L));
+		assertThat(watch.elapsed(TimeUnit.SECONDS), lessThan(5L));
 	}
 
 	@Test
@@ -91,7 +90,7 @@ public class JobWaiterTest {
 		watch.stop();
 
 		assertThat(done, is(false));
-		assertThat(watch.elapsedTime(TimeUnit.SECONDS), lessThan(5L));
+		assertThat(watch.elapsed(TimeUnit.SECONDS), lessThan(5L));
 	}
 
 	//

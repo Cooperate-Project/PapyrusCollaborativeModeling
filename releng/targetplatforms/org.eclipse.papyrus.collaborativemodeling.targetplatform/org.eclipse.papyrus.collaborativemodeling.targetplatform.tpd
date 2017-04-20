@@ -96,9 +96,14 @@ location ocl "http://download.eclipse.org/modeling/mdt/ocl/updates/interim/6.3.0
 
 //manualUpdate
 
-location orbit "http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository" {
+location orbit "http://download.eclipse.org/tools/orbit/downloads/drops/R20170307180635/repository" {
 	org.apache.commons.io lazy
 	org.apache.commons.io.source lazy
+	com.google.guava [21.0.0,22.0.1]
+	com.google.guava.source [21.0.0,22.0.1]
+	org.apache.batik.css [1.6.0,1.6.1)
+	org.apache.batik.util [1.6.0,1.6.1)
+	org.apache.batik.xml [1.6.0,1.6.1)
 }
 
 //updateFrom("XWT",0)

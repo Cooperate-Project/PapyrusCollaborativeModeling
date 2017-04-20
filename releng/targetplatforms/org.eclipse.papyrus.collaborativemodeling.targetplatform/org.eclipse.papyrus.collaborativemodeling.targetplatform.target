@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Collaborative Modeling Target Platform" sequenceNumber="1488905956">
+<target name="Collaborative Modeling Target Platform" sequenceNumber="1492705545">
   <locations>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.platform.feature.group" version="0.0.0"/>
@@ -76,7 +76,12 @@
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.apache.commons.io" version="0.0.0"/>
       <unit id="org.apache.commons.io.source" version="0.0.0"/>
-      <repository id="orbit" location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository"/>
+      <unit id="com.google.guava" version="21.0.0.v20170206-1425"/>
+      <unit id="com.google.guava.source" version="21.0.0.v20170206-1425"/>
+      <unit id="org.apache.batik.css" version="1.6.0.v201011041432"/>
+      <unit id="org.apache.batik.util" version="1.6.0.v201011041432"/>
+      <unit id="org.apache.batik.xml" version="1.6.0.v201011041432"/>
+      <repository id="orbit" location="http://download.eclipse.org/tools/orbit/downloads/drops/R20170307180635/repository"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.xwt.feature.feature.group" version="0.0.0"/>

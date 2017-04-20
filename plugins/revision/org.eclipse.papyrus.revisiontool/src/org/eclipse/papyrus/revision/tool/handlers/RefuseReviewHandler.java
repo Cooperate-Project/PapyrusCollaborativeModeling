@@ -182,7 +182,7 @@ public class RefuseReviewHandler extends RevisionAbstractHandler {
 	protected void executeSeCommand(EObject eOject, ReviewResourceManager r, EStructuralFeature feature, Object set,Element element) {
 		SetRequest request= new SetRequest(((Match)eOject).getLeft(), feature, set);
 		request.setEditingDomain(r.getDomain());
-		IElementEditService  provider = ElementEditServiceUtils.getCommandProvider(request);
+		IElementEditService  provider = ElementEditServiceUtils.getCommandProvider(eOject);
 		if(provider != null) {
 			// Retrieve delete command from the Element Edit service
 			ICommand cmd = provider.getEditCommand(request);
