@@ -13,13 +13,15 @@
 package org.eclipse.papyrus.cdo.core.resource;
 
 import org.eclipse.emf.cdo.eresource.impl.CDOResourceFactoryImpl;
+import org.eclipse.emf.cdo.eresource.impl.CDOResourceImpl;
+import org.eclipse.emf.common.util.URI;
 
 /**
  * This is the PapyrusCDOResourceFactory type. Enjoy.
  */
 public class PapyrusCDOResourceFactory
 		extends CDOResourceFactoryImpl {
-
+	
 	private final CDOAwareModelSet modelSet;
 
 	public PapyrusCDOResourceFactory(CDOAwareModelSet modelSet) {
@@ -32,4 +34,13 @@ public class PapyrusCDOResourceFactory
 	protected boolean isGetResource() {
 		return modelSet.isInGetResource() || super.isGetResource();
 	}
+	
+	 /**
+	   * @since 4.0
+	   */
+	  protected CDOResourceImpl createCDOResource(URI uri)
+	  {
+	    return new PapyrusCDOResourceImpl(uri);
+	  }
+	
 }
