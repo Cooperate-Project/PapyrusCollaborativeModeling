@@ -144,10 +144,7 @@ public class CDOContextStorageProvider extends AbstractContextStorageProvider {
 	@Override
 	public void initialize(ResourceSet resourceSet) throws CoreException {
 		this.resourceSet = resourceSet;
-
 		uriHandler = CDOTextURIHandler.install(resourceSet);
-		resourceSet.getURIConverter().getURIHandlers().add(uriHandler);
-
 		CDOExplorerUtil.getCheckoutManager().addListener(repositoryAdapter);
 	}
 
