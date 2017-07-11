@@ -6,7 +6,7 @@ before_install:
 - . /tmp/BuildUtils/travisci/setup.sh
 install: true
 script:
-- mavenBuildWoSonar.sh
+- 'if [ "$TRAVIS_BRANCH" = "cooperate" ] || [ -n "$TRAVIS_TAG" ]; then mvn clean deploy; else mvn clean verify; fi'
 cache:
   directories:
   - "$HOME/.m2/repository"
