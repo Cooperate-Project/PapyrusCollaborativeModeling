@@ -23,7 +23,6 @@
 		<bintray.deploy.replaceIfExisting>false</bintray.deploy.replaceIfExisting>
 		<bintray.deploy.replaceIfSnapshot>true</bintray.deploy.replaceIfSnapshot>
 		<bintray.deploy.file>${project.build.directory}/final</bintray.deploy.file>
-		<bintray.deploy.version>1.2.0.RC1</bintray.deploy.version>
 	</properties>
 
 	<build>
