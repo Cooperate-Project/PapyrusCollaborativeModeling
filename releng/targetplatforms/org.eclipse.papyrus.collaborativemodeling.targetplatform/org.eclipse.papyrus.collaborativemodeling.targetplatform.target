@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Collaborative Modeling Target Platform" sequenceNumber="1497549504">
+<target name="Collaborative Modeling Target Platform" sequenceNumber="1502900611">
   <locations>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.platform.feature.group" version="0.0.0"/>
@@ -16,6 +16,8 @@
       <unit id="org.eclipse.draw2d" version="0.0.0"/>
       <unit id="org.eclipse.gef" version="0.0.0"/>
       <unit id="org.eclipse.xwt" version="0.0.0"/>
+      <unit id="org.eclipse.egit.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.jgit.feature.group" version="0.0.0"/>
       <repository id="eclipse-oxygen" location="http://download.eclipse.org/releases/oxygen/"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
@@ -104,25 +106,35 @@
       <repository id="uml" location="http://download.eclipse.org/modeling/mdt/uml2/updates/5.3milestones"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.emf.compare.diagram.gmf.source.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.emf.compare.source.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.emf.compare.diagram.gmf.source.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.emf.compare.uml2.source.feature.group" version="0.0.0"/>
-      <unit id="org.eclipse.emf.compare.ide.ui.feature.group" version="0.0.0"/>
-      <unit id="org.eclipse.emf.compare.rcp.ui.feature.group" version="0.0.0"/>
-      <repository id="emfCompare" location="http://download.eclipse.org/modeling/emf/compare/updates/milestones/3.3/S201706130827"/>
+      <unit id="org.eclipse.emf.compare.egit.source.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.emf.compare.ide.ui.source.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.emf.compare.rcp.ui.source.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.emf.compare.tests.source.feature.group" version="0.0.0"/>
+      <repository id="emfCompare" location="http://download.eclipse.org/modeling/emf/compare/updates/logical/emf.compare/nightly/latest"/>
+    </location>
+    <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.papyrus.sysml14" version="0.0.0"/>
+      <repository id="sysml" location="http://download.eclipse.org/modeling/mdt/papyrus/components/sysml14"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="com.google.inject" version="0.0.0"/>
       <unit id="org.apache.commons.io" version="0.0.0"/>
       <unit id="org.apache.commons.io.source" version="0.0.0"/>
-      <unit id="com.google.guava" version="15.0.0.v201403281430"/>
-      <unit id="com.google.guava.source" version="15.0.0.v201403281430"/>
-      <unit id="org.apache.batik.css" version="1.6.0.v201011041432"/>
-      <unit id="org.apache.batik.util" version="1.6.0.v201011041432"/>
-      <unit id="org.apache.batik.xml" version="1.6.0.v201011041432"/>
-      <unit id="org.apache.log4j" version="0.0.0"/>
-      <unit id="org.apache.commons.lang" version="0.0.0"/>
-      <repository id="orbit" location="http://download.eclipse.org/tools/orbit/downloads/drops/R20170516192513/repository"/>
+      <unit id="com.google.guava" version="21.0.0.v20170206-1425"/>
+      <unit id="com.google.guava.source" version="21.0.0.v20170206-1425"/>
+      <unit id="javaewah" version="0.0.0"/>
+      <unit id="org.apache.commons.compress" version="0.0.0"/>
+      <unit id="org.kohsuke.args4j" version="0.0.0"/>
+      <unit id="org.mockito" version="1.9.5.v201605172210"/>
+      <unit id="org.hamcrest" version="0.0.0"/>
+      <unit id="org.hamcrest.library" version="0.0.0"/>
+      <unit id="org.hamcrest.integration" version="0.0.0"/>
+      <unit id="org.hamcrest.text" version="0.0.0"/>
+      <unit id="org.objenesis" version="1.0.0.v201505121915"/>
+      <repository id="orbit" location="http://download.eclipse.org/tools/orbit/downloads/drops/R20170307180635/repository"/>
     </location>
   </locations>
 </target>

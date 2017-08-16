@@ -15,6 +15,9 @@ location "http://download.eclipse.org/releases/oxygen/" eclipse-oxygen {
  org.eclipse.draw2d lazy
  org.eclipse.gef lazy
  org.eclipse.xwt lazy
+ 
+ org.eclipse.egit.feature.group lazy
+ org.eclipse.jgit.feature.group lazy
 }
 
 //emf.transaction requires emf.validation
@@ -36,7 +39,7 @@ location "https://hudson.eclipse.org/papyrus/job/Papyrus-Master-Developer/lastSu
 
 // Temporary fix as the latest Milestone sdk does not 
 //updateFrom ("Papyrus",0)
-location papyrus "http://download.eclipse.org/modeling/mdt/papyrus/updates/milestones/3.0/RC4/main" {
+location papyrus "http://download.eclipse.org/modeling/mdt/papyrus/updates/releases/oxygen" {
 	org.eclipse.papyrus.views.properties.toolsmiths lazy
 }
 
@@ -135,26 +138,38 @@ location uml "http://download.eclipse.org/modeling/mdt/uml2/updates/5.3milestone
 }
 
 //updateFrom("EMF COMPARE",0) 
-location emfCompare "http://download.eclipse.org/modeling/emf/compare/updates/milestones/3.3/S201706130827" {
-	org.eclipse.emf.compare.diagram.gmf.source.feature.group lazy
+location emfCompare "http://download.eclipse.org/modeling/emf/compare/updates/logical/emf.compare/nightly/latest" {
 	org.eclipse.emf.compare.source.feature.group lazy
+	org.eclipse.emf.compare.diagram.gmf.source.feature.group lazy
 	org.eclipse.emf.compare.uml2.source.feature.group lazy
-	org.eclipse.emf.compare.ide.ui.feature.group lazy
-	org.eclipse.emf.compare.rcp.ui.feature.group lazy
+	org.eclipse.emf.compare.egit.source.feature.group lazy
+	org.eclipse.emf.compare.ide.ui.source.feature.group lazy
+	org.eclipse.emf.compare.rcp.ui.source.feature.group	lazy
+	org.eclipse.emf.compare.tests.source.feature.group lazy
+}
+//required for Compare test ProfileMigrationTest 
+location sysml "http://download.eclipse.org/modeling/mdt/papyrus/components/sysml14" {
+	org.eclipse.papyrus.sysml14 lazy
 }
 
 //manualUpdate
-location orbit "http://download.eclipse.org/tools/orbit/downloads/drops/R20170516192513/repository" {
-	com.google.inject lazy
+with requirements
+location orbit "http://download.eclipse.org/tools/orbit/downloads/drops/R20170307180635/repository" {
 	org.apache.commons.io lazy
 	org.apache.commons.io.source lazy
-	com.google.guava [15.0.0, 16.0.0)
-	com.google.guava.source [15.0.0, 16.0.0)
-	org.apache.batik.css [1.6.0,1.6.1)
-	org.apache.batik.util [1.6.0,1.6.1)
-	org.apache.batik.xml [1.6.0,1.6.1)
-	org.apache.log4j lazy
- 	org.apache.commons.lang lazy
+	com.google.inject lazy
+	com.google.guava [21.0.0,22.0.0)
+	com.google.guava.source [21.0.0,22.0.0)
+	/* Egit/Jgit */
+	javaewah lazy
+	org.apache.commons.compress lazy
+	org.kohsuke.args4j lazy
+	org.mockito [1.9.0,2.0.0)
+	org.hamcrest lazy
+	org.hamcrest.library lazy
+	org.hamcrest.integration lazy
+	org.hamcrest.text lazy
+	org.objenesis [1.0.0,2.0.0)
 }
 
 // Revision Tool
