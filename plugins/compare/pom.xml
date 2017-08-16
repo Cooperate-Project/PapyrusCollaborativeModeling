@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Copyright (c) 2017 EclipseSource Services GmbH.
+
+     All rights reserved. This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License v1.0
+     which accompanies this distribution, and is available at
+     http://www.eclipse.org/legal/epl-v10.html
+
+     Contributors:
+     		Philip Langer - Initial API and implementation
+ -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- Parent of this POM -->
+	<parent>
+		<version>0.7.0-SNAPSHOT</version>
+		<groupId>org.eclipse.papyrus.collaborativemodeling</groupId>
+		<artifactId>org.eclipse.papyrus.collaborativemodeling.plugins</artifactId>
+	</parent>
+
+	<!-- Project POM (aggregator) -->
+	<groupId>org.eclipse.papyrus.collaborativemodeling</groupId>
+	<artifactId>org.eclipse.papyrus.collaborativemodeling.plugins.compare</artifactId>
+	<version>0.7.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>Collaborative Modeling -- Papyrus Compare</name>
+	<description>Papyrus Compare allows to diff/merge Papyrus models with EGit.</description>
+
+	<!-- Children modules to build -->
+	<modules>
+		<module>org.eclipse.emf.compare.diagram.ide.ui.papyrus</module>
+		<module>org.eclipse.emf.compare.diagram.papyrus</module>
+		<module>org.eclipse.emf.compare.uml2.papyrus</module>
+		<module>org.eclipse.emf.compare.uml2.edit.papyrus</module>
+	</modules>
+
+	<profiles>
+		<profile>
+			<id>papyrusCompareTests</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.eclipse.tycho</groupId>
+						<artifactId>tycho-surefire-plugin</artifactId>
+						<version>${tycho-version}</version>
+						<configuration>
+							<useUIHarness>true</useUIHarness>
+							<useUIThread>true</useUIThread>
+							<testFailureIgnore>true</testFailureIgnore>
+							<product>org.eclipse.sdk.ide</product>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+			<modules>
+				<module>org.eclipse.emf.compare.uml2.papyrus.tests</module>
+				<module>org.eclipse.emf.compare.diagram.papyrus.tests</module>
+				<module>org.eclipse.emf.compare.diagram.papyrus.tests.git</module>
+			</modules>
+		</profile>
+	</profiles>
+
+</project>

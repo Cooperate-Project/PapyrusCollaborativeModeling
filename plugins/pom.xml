@@ -2,14 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<!-- Parent of this POM -->
 	<parent>
 		<version>0.7.0-SNAPSHOT</version>
 		<groupId>org.eclipse.papyrus.collaborativemodeling</groupId>
 		<artifactId>org.eclipse.papyrus.collaborativemodeling.root</artifactId>
 	</parent>
-	
+
 	<!-- Project root POM (aggregator) -->
 	<groupId>org.eclipse.papyrus.collaborativemodeling</groupId>
 	<artifactId>org.eclipse.papyrus.collaborativemodeling.plugins</artifactId>
@@ -22,6 +22,7 @@
 	<modules>
 		<module>cdo</module>
 		<module>revision</module>
+		<module>compare</module>
 	</modules>
-	
-</project>	
+
+</project>

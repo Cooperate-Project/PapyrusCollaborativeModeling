@@ -160,6 +160,9 @@
 	          <execution>
 	            <configuration>
 	              <header>${session.executionRootDirectory}/tests/header/header.epl.txt</header>
+                  <excludes>
+                    <exclude>**/MockSystemReader.java</exclude> <!-- has deviating header -->
+	              </excludes>
 	            </configuration>
 	          </execution>
 	        </executions>
