@@ -35,6 +35,7 @@
 		<module>org.eclipse.papyrus.compare.diagram</module>
 		<module>org.eclipse.papyrus.compare.uml2</module>
 		<module>org.eclipse.papyrus.compare.uml2.edit</module>
+		<module>org.eclipse.papyrus.compare.feature</module>
 	</modules>
 
 	<profiles>
