@@ -31,10 +31,10 @@
 
 	<!-- Children modules to build -->
 	<modules>
-		<module>org.eclipse.emf.compare.diagram.ide.ui.papyrus</module>
-		<module>org.eclipse.emf.compare.diagram.papyrus</module>
-		<module>org.eclipse.emf.compare.uml2.papyrus</module>
-		<module>org.eclipse.emf.compare.uml2.edit.papyrus</module>
+		<module>org.eclipse.papyrus.compare.diagram.ide.ui</module>
+		<module>org.eclipse.papyrus.compare.diagram</module>
+		<module>org.eclipse.papyrus.compare.uml2</module>
+		<module>org.eclipse.papyrus.compare.uml2.edit</module>
 	</modules>
 
 	<profiles>
@@ -59,9 +59,9 @@
 				</plugins>
 			</build>
 			<modules>
-				<module>org.eclipse.emf.compare.uml2.papyrus.tests</module>
-				<module>org.eclipse.emf.compare.diagram.papyrus.tests</module>
-				<module>org.eclipse.emf.compare.diagram.papyrus.tests.git</module>
+				<module>org.eclipse.papyrus.compare.uml2.tests</module>
+				<module>org.eclipse.papyrus.compare.diagram.tests</module>
+				<module>org.eclipse.papyrus.compare.diagram.tests.git</module>
 			</modules>
 		</profile>
 	</profiles>
