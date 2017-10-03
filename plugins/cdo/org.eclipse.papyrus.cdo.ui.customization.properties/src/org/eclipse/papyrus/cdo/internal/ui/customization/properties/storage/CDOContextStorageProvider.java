@@ -146,7 +146,6 @@ public class CDOContextStorageProvider extends AbstractContextStorageProvider {
 		this.resourceSet = resourceSet;
 
 		uriHandler = CDOTextURIHandler.install(resourceSet);
-		resourceSet.getURIConverter().getURIHandlers().add(uriHandler);
 
 		CDOExplorerUtil.getCheckoutManager().addListener(repositoryAdapter);
 	}
