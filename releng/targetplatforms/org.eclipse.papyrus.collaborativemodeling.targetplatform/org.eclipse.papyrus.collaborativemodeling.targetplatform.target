@@ -16,7 +16,7 @@
       <unit id="org.eclipse.draw2d" version="0.0.0"/>
       <unit id="org.eclipse.gef" version="0.0.0"/>
       <unit id="org.eclipse.xwt" version="0.0.0"/>
-      <repository id="eclipse-oxygen" location="http://download.eclipse.org/releases/oxygen/"/>
+      <repository id="eclipse-oxygen" location="http://ftp-stud.hs-esslingen.de/pub/Mirrors/eclipse/releases/oxygen/"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.papyrus.junit.utils" version="0.0.0"/>
