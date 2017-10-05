@@ -15,10 +15,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import junit.framework.JUnit4TestAdapter;
-import junit.framework.Test;
-import junit.textui.TestRunner;
-
 /**
  * This test suite allows us to launch all tests for EMF Compare for UML at once. This test suite should
  * contain classes that need the UI in order to be executed. Tests that do not need the UI should go to
@@ -29,23 +25,5 @@ import junit.textui.TestRunner;
 @RunWith(Suite.class)
 @SuiteClasses({ProfileMigrationTest.class })
 public class AllUITests {
-
-	/**
-	 * Standalone launcher for all of compare's tests.
-	 * 
-	 * @generated
-	 */
-	public static void main(final String[] args) {
-		TestRunner.run(suite());
-	}
-
-	/**
-	 * This will return a suite populated with all tests available through this class.
-	 * 
-	 * @generated
-	 */
-	public static Test suite() {
-		return new JUnit4TestAdapter(AllUITests.class);
-	}
 
 }
