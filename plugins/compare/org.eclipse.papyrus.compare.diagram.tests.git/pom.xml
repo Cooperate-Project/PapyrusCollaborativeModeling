@@ -22,7 +22,7 @@
             <include>org/eclipse/papyrus/compare/diagram/tests/suite/PapyrusGitTests.class</include>
           </includes>
           <useUIHarness>true</useUIHarness>
-          <argLine>-Xmx2048m</argLine>
+          <argLine>-Xmx2048m ${os-jvm-flags}</argLine>
 		</configuration>
 	  </plugin>
     </plugins>
