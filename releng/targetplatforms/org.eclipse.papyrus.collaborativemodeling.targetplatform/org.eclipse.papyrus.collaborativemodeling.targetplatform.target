@@ -25,83 +25,83 @@
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.papyrus.views.properties.toolsmiths" version="0.0.0"/>
-      <repository id="papyrus" location="http://download.eclipse.org/modeling/mdt/papyrus/updates/releases/oxygen"/>
+      <repository id="papyrus" location="http://ftp-stud.hs-esslingen.de/pub/Mirrors/eclipse/modeling/mdt/papyrus/updates/releases/oxygen"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.ecf.filetransfer.feature.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.ecf.core.feature.feature.group" version="0.0.0"/>
-      <repository id="ecf" location="http://download.eclipse.org/rt/ecf/3.13.7/site.p2"/>
+      <repository id="ecf" location="http://ftp-stud.hs-esslingen.de/pub/Mirrors/eclipse/rt/ecf/3.13.7/site.p2"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.m2m.qvt.oml.sdk.feature.group" version="0.0.0"/>
-      <repository id="qvto" location="http://download.eclipse.org/mmt/qvto/updates/releases/3.7.0"/>
+      <repository id="qvto" location="http://ftp-stud.hs-esslingen.de/pub/Mirrors/eclipse/mmt/qvto/updates/releases/3.7.0"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.xtext.sdk.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.xtend.sdk.feature.group" version="0.0.0"/>
-      <repository id="xtend" location="http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.12.0/"/>
+      <repository id="xtend" location="http://ftp-stud.hs-esslingen.de/pub/Mirrors/eclipse/modeling/tmf/xtext/updates/releases/2.12.0/"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.xpand.sdk.feature.group" version="0.0.0"/>
-      <repository id="xpand" location="http://download.eclipse.org/modeling/m2t/xpand/updates/releases/R201605260315/"/>
+      <repository id="xpand" location="http://ftp-stud.hs-esslingen.de/pub/Mirrors/eclipse/modeling/m2t/xpand/updates/releases/R201605260315/"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.ocl.core.sdk.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.ocl.examples.classic.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.ocl.examples.feature.group" version="0.0.0"/>
-      <repository id="ocl" location="http://download.eclipse.org/modeling/mdt/ocl/updates/milestones/6.3.0/S201706132000"/>
+      <repository id="ocl" location="http://ftp-stud.hs-esslingen.de/pub/Mirrors/eclipse/modeling/mdt/ocl/updates/milestones/6.3.0/S201706132000"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.wst.xml_ui.feature.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.wst.common.fproj.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.wst.server_ui.feature.feature.group" version="0.0.0"/>
-      <repository id="webtools" location="http://download.eclipse.org/webtools/downloads/drops/R3.9.0/R-3.9.0-20170613094504/repository/"/>
+      <repository id="webtools" location="http://ftp-stud.hs-esslingen.de/pub/Mirrors/eclipse/webtools/downloads/drops/R3.9.0/R-3.9.0-20170613094504/repository/"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.nebula.widgets.cdatetime.feature.feature.group" version="0.0.0"/>
-      <repository id="nebula" location="http://download.eclipse.org/nebula/releases/1.3.0/"/>
+      <repository id="nebula" location="http://ftp-stud.hs-esslingen.de/pub/Mirrors/eclipse/nebula/releases/1.3.0/"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.net4j.sdk.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.emf.cdo.sdk.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.emf.cdo.dawn.sdk.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.emf.cdo.dawn.feature.group" version="0.0.0"/>
-      <repository id="cdo" location="http://download.eclipse.org/modeling/emf/cdo/drops/S20170531-1203"/>
+      <repository id="cdo" location="http://ftp-stud.hs-esslingen.de/pub/Mirrors/eclipse/modeling/emf/cdo/drops/S20170531-1203"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.emf.mwe.sdk.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="0.0.0"/>
-      <repository id="mwe2" location="http://download.eclipse.org/modeling/emft/mwe/updates/releases/2.9.1/"/>
+      <repository id="mwe2" location="http://ftp-stud.hs-esslingen.de/pub/Mirrors/eclipse/modeling/emft/mwe/updates/releases/2.9.1/"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.graphiti.sdk.feature.feature.group" version="0.0.0"/>
-      <repository id="graphiti" location="http://download.eclipse.org/graphiti/updates/milestones/S-0.14.0M7-201705161212/"/>
+      <repository id="graphiti" location="http://ftp-stud.hs-esslingen.de/pub/Mirrors/eclipse/graphiti/updates/milestones/S-0.14.0M7-201705161212/"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.emf.sdk.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.xsd.sdk.feature.group" version="0.0.0"/>
-      <repository id="emf" location="http://download.eclipse.org/modeling/emf/emf/updates/2.13/"/>
+      <repository id="emf" location="http://ftp-stud.hs-esslingen.de/pub/Mirrors/eclipse/modeling/emf/emf/updates/2.13/"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.emf.validation.sdk.feature.group" version="0.0.0"/>
-      <repository id="emfValidation" location="http://download.eclipse.org/modeling/emf/validation/updates/releases/R201706061352"/>
+      <repository id="emfValidation" location="http://ftp-stud.hs-esslingen.de/pub/Mirrors/eclipse/modeling/emf/validation/updates/releases/R201706061352"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.emf.transaction.sdk.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.emf.workspace.feature.group" version="0.0.0"/>
-      <repository id="emfTransaction" location="http://download.eclipse.org/modeling/emf/transaction/updates/releases/R201706061339"/>
+      <repository id="emfTransaction" location="http://ftp-stud.hs-esslingen.de/pub/Mirrors/eclipse/modeling/emf/transaction/updates/releases/R201706061339"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.gmf.runtime.notation.sdk.feature.group" version="0.0.0"/>
-      <repository id="gmfNotation" location="http://download.eclipse.org/modeling/gmp/gmf-notation/updates/releases/R201706061354"/>
+      <repository id="gmfNotation" location="http://ftp-stud.hs-esslingen.de/pub/Mirrors/eclipse/modeling/gmp/gmf-notation/updates/releases/R201706061354"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="0.0.0"/>
-      <repository id="gmfRuntime" location="http://download.eclipse.org/modeling/gmp/gmf-runtime/updates/releases/R201706061437"/>
+      <repository id="gmfRuntime" location="http://ftp-stud.hs-esslingen.de/pub/Mirrors/eclipse/modeling/gmp/gmf-runtime/updates/releases/R201706061437"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.uml2.sdk.feature.group" version="0.0.0"/>
-      <repository id="uml" location="http://download.eclipse.org/modeling/mdt/uml2/updates/5.3milestones"/>
+      <repository id="uml" location="http://ftp-stud.hs-esslingen.de/pub/Mirrors/eclipse/modeling/mdt/uml2/updates/5.3milestones"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.emf.compare.diagram.gmf.source.feature.group" version="0.0.0"/>
@@ -109,7 +109,7 @@
       <unit id="org.eclipse.emf.compare.uml2.source.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.emf.compare.ide.ui.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.emf.compare.rcp.ui.feature.group" version="0.0.0"/>
-      <repository id="emfCompare" location="http://download.eclipse.org/modeling/emf/compare/updates/milestones/3.3/S201706130827"/>
+      <repository id="emfCompare" location="http://ftp-stud.hs-esslingen.de/pub/Mirrors/eclipse/modeling/emf/compare/updates/milestones/3.3/S201706130827"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="com.google.inject" version="0.0.0"/>
@@ -122,7 +122,7 @@
       <unit id="org.apache.batik.xml" version="1.6.0.v201011041432"/>
       <unit id="org.apache.log4j" version="0.0.0"/>
       <unit id="org.apache.commons.lang" version="0.0.0"/>
-      <repository id="orbit" location="http://download.eclipse.org/tools/orbit/downloads/drops/R20170516192513/repository"/>
+      <repository id="orbit" location="http://ftp-stud.hs-esslingen.de/pub/Mirrors/eclipse/tools/orbit/downloads/drops/R20170516192513/repository"/>
     </location>
   </locations>
 </target>
