@@ -27,9 +27,11 @@ import org.eclipse.papyrus.compare.diagram.tests.groups.PapyrusConflictsGroupPro
 import org.eclipse.papyrus.compare.diagram.tests.merge.AssocMergeTest;
 import org.eclipse.papyrus.compare.diagram.tests.merge.EdgeMergeTest;
 import org.eclipse.papyrus.compare.diagram.tests.merge.NodeMergeTest;
+import org.eclipse.papyrus.compare.diagram.tests.merge.sysml.MergeDiffInvolvingRefineDiffTest;
 import org.eclipse.papyrus.compare.diagram.tests.modelextension.ModelExtensionUtilTest;
 import org.eclipse.papyrus.compare.diagram.tests.saveparameter.SaveParameterHookIntegrationTest;
 import org.eclipse.papyrus.compare.diagram.tests.saveparameter.SaveParameterHookTest;
+import org.eclipse.papyrus.compare.diagram.tests.structuremergeviewer.actions.MergeNonConflictingCascadingFilterTest;
 import org.eclipse.papyrus.compare.diagram.tests.uriattachment.URIAttachmentTest;
 import org.eclipse.papyrus.infra.core.sashwindows.di.DiPackage;
 import org.eclipse.papyrus.infra.core.sashwindows.di.util.DiResourceFactoryImpl;
@@ -54,7 +56,8 @@ import junit.textui.TestRunner;
 @SuiteClasses({AssocMergeTest.class, EdgeMergeTest.class, NodeMergeTest.class, ModelExtensionUtilTest.class,
 		SaveParameterHookTest.class, SaveParameterHookIntegrationTest.class, URIAttachmentTest.class,
 		DiagramTooltipProviderTest.class, PapyrusConflictsGroupProviderTests.class,
-		IgnoreDiFilePostProcessorTest.class, PapyrusContextUtilTest.class })
+		IgnoreDiFilePostProcessorTest.class, PapyrusContextUtilTest.class,
+		MergeNonConflictingCascadingFilterTest.class, MergeDiffInvolvingRefineDiffTest.class, })
 public class AllTests {
 
 	/**
