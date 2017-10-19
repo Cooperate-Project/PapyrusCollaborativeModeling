@@ -8,6 +8,7 @@
  * Contributors:
  *     Stefan Dirix - initial API and implementation
  *     Martin Fleck - bug 518957
+ *     Philip Langer - Fix NPE
  *******************************************************************************/
 package org.eclipse.papyrus.compare.diagram.ide.ui.contentmergeviewer.facet;
 
@@ -17,6 +18,7 @@ import java.util.Map;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.edit.provider.Disposable;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
@@ -75,9 +77,12 @@ public class PapyrusFacetContentProviderWrapperAdapterFactory extends UMLItemPro
 	 * @return The {@link ResourceSet} for the given {@code target} if there is one, {@code null} otherwise.
 	 */
 	private ResourceSet getResourceSet(Notifier target) {
-		if (EObject.class.isInstance(target)) {
-			EObject object = EObject.class.cast(target);
-			return object.eResource().getResourceSet();
+		if (target instanceof EObject) {
+			EObject object = (EObject)target;
+			Resource resource = object.eResource();
+			if (resource != null) {
+				return resource.getResourceSet();
+			}
 		}
 		return null;
 	}
