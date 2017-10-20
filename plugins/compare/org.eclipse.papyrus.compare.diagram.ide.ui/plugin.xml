@@ -108,4 +108,13 @@
             ranking="10">
       </contentCustomization>
    </extension>
+   <extension
+         point="org.eclipse.emf.compare.rcp.ui.filters">
+      <filter
+            activeByDefault="true"
+            class="org.eclipse.papyrus.compare.diagram.ide.ui.internal.structuremergeviewer.filters.PapyrusDiagramTechnicalElementsFilter"
+            description="Technical elements of Papyrus diagrams such as hidden applied stereotype comments shapes and links."
+            label="Papyrus diagram technical elements">
+      </filter>
+   </extension>
 </plugin>

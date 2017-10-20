@@ -42,4 +42,5 @@ Export-Package: org.eclipse.papyrus.compare.diagram.ide.ui.comparesource,
  org.eclipse.papyrus.compare.diagram.ide.ui.internal,
  org.eclipse.papyrus.compare.diagram.ide.ui.internal.context,
  org.eclipse.papyrus.compare.diagram.ide.ui.internal.logical.view,
+ org.eclipse.papyrus.compare.diagram.ide.ui.internal.structuremergeviewer.filters;x-internal:=true,
  org.eclipse.papyrus.compare.diagram.ide.ui.util
