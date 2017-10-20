@@ -7,18 +7,18 @@
  * 
  * Contributors:
  *     Stefan Dirix - initial API and implementation
- *     Philip Langer - introduce caching
+ *     Philip Langer - introduce caching and improve selection
  *******************************************************************************/
 package org.eclipse.papyrus.compare.diagram.ide.ui.contentmergeviewer;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -265,13 +265,13 @@ public class PapyrusTreeContentMergeViewer extends TreeContentMergeViewer {
 		Object itemValue = item.getSideValue(side);
 		IMergeViewerItem result;
 		if (cachedMapForSelection == null) {
-			cachedMapForSelection = new HashMap<>();
+			cachedMapForSelection = Maps.newHashMap();
 			result = null;
 		} else {
 			result = cachedMapForSelection.get(itemValue);
 		}
 
-		if (result == null) {
+		if (result == null && itemValue != null) {
 			LinkedList<AbstractContentFunction> contentComputations;
 
 			switch (side) {
@@ -305,9 +305,55 @@ public class PapyrusTreeContentMergeViewer extends TreeContentMergeViewer {
 				contentComputations.addAll(0, containerComputations);
 			}
 
-			// compute item
-			while (!contentComputations.isEmpty()) {
-				result = contentComputations.removeFirst().apply(itemValue, containers);
+			result = computeItemToBeSelected(itemValue, containers, contentComputations);
+		}
+
+		return result;
+	}
+
+	/**
+	 * Computes the item to be selected for the given item value, taking into account the containers, using
+	 * the content computations.
+	 * 
+	 * @param itemValue
+	 *            the item for which to base the selection.
+	 * @param containers
+	 *            the containers for that item.
+	 * @param contentComputations
+	 *            the computations for computing content.
+	 * @return the item to be selected.
+	 */
+	private IMergeViewerItem computeItemToBeSelected(Object itemValue, Collection<Object> containers,
+			LinkedList<AbstractContentFunction> contentComputations) {
+		// We try to limit the amount of time we spend looking for selection.
+		// Sometimes the object will not be present in the tree at all,
+		// causing the whole tree to be visited.
+		// So we keep track of which of the contains have not been visited,
+		// removing any containers for which there is already a selection computed.
+		IMergeViewerItem result = null;
+		Collection<Object> unvistedContainers = Sets.newHashSet(containers);
+		unvistedContainers.removeAll(cachedMapForSelection.keySet());
+		long start = System.currentTimeMillis();
+		while (!contentComputations.isEmpty()) {
+			AbstractContentFunction contentFunction = contentComputations.removeFirst();
+
+			// If we've visited all the containers and have been computing for more the 2 seconds,
+			// stop looking and select the container instead.
+			unvistedContainers.remove(contentFunction.getValue());
+			if (unvistedContainers.isEmpty() && (System.currentTimeMillis() - start) > 2 * 1000) {
+				break;
+			}
+
+			result = contentFunction.apply(itemValue, containers);
+			if (result != null) {
+				break;
+			}
+		}
+
+		// If we haven't found the selection, try to find a selection for the nearest container.
+		if (result == null) {
+			for (Object container : containers) {
+				result = cachedMapForSelection.get(container);
 				if (result != null) {
 					break;
 				}
@@ -359,7 +405,7 @@ public class PapyrusTreeContentMergeViewer extends TreeContentMergeViewer {
 	private Collection<Object> getContainers(Object eObject) {
 		Collection<Object> containers;
 		if (eObject instanceof EObject) {
-			containers = new HashSet<>();
+			containers = Sets.newLinkedHashSet();
 			for (EObject container = ((EObject)eObject).eContainer(); container != null; container = container
 					.eContainer()) {
 				containers.add(container);
@@ -399,7 +445,7 @@ public class PapyrusTreeContentMergeViewer extends TreeContentMergeViewer {
 		/**
 		 * The selections being cached.
 		 * 
-		 * @see PapyrusTreeContentMergeViewer#selections
+		 * @see PapyrusTreeContentMergeViewer#cachedMapForSelection
 		 */
 		protected final Map<Object, IMergeViewerItem> selections;
 
