@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 EclipseSource Muenchen GmbH and others.
+ * Copyright (c) 2016, 2017 EclipseSource Muenchen GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
 package org.eclipse.papyrus.compare.diagram.ide.ui.contentmergeviewer;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -210,7 +211,7 @@ public class PapyrusTreeContentMergeViewer extends TreeContentMergeViewer {
 				if (rightInitialItem == null) {
 					getLeftMergeViewer().setSelection(StructuredSelection.EMPTY, true);
 				} else {
-					setSelection((ICompareAccessor)right, getRightMergeViewer());
+					setSelection((ICompareAccessor)right);
 				}
 			} else {
 				// Strange case: left is an ICompareAccessor but right is not?
@@ -218,7 +219,7 @@ public class PapyrusTreeContentMergeViewer extends TreeContentMergeViewer {
 			}
 		} else {
 			// others will synchronize on this one :)
-			setSelection((ICompareAccessor)left, getLeftMergeViewer());
+			setSelection((ICompareAccessor)left);
 		}
 		redrawCenterControl();
 	}
@@ -229,17 +230,16 @@ public class PapyrusTreeContentMergeViewer extends TreeContentMergeViewer {
 	 * @param accessor
 	 *            The {@link ICompareAccessor} which contains the root tree elements and the initial
 	 *            selection.
-	 * @param viewer
-	 *            The {@ink TreeMergeViewer} for which the selection is to be set.
 	 */
-	private void setSelection(ICompareAccessor accessor, TreeMergeViewer viewer) {
+	private void setSelection(ICompareAccessor accessor) {
 		// First try to set the initial item directly
 		final IMergeViewerItem initialItem = accessor.getInitialItem();
+		TreeMergeViewer viewer = getMergeViewer(initialItem.getSide());
 		viewer.setSelection(new StructuredSelection(initialItem), true);
 
 		// if that didn't work (empty selection), use cache to find correct merge viewer item
 		if (viewer.getSelection().isEmpty()) {
-			IMergeViewerItem itemToBeSelected = getItemToBeSelected(initialItem);
+			IMergeViewerItem itemToBeSelected = getItemToBeSelected(initialItem, viewer);
 			if (itemToBeSelected != null) {
 				viewer.setSelection(new StructuredSelection(itemToBeSelected), true);
 			} else {
@@ -253,10 +253,12 @@ public class PapyrusTreeContentMergeViewer extends TreeContentMergeViewer {
 	 * 
 	 * @param item
 	 *            the input item.
+	 * @param viewer
+	 *            the viewer in which to select the item.
 	 * @return the item to be selected.
 	 */
-	private IMergeViewerItem getItemToBeSelected(IMergeViewerItem item) {
-		MergeViewerSide side = item.getSide();
+	private IMergeViewerItem getItemToBeSelected(IMergeViewerItem item, TreeMergeViewer viewer) {
+		MergeViewerSide side = viewer.getSide();
 		Object itemValue = item.getSideValue(side);
 		IMergeViewerItem result;
 		if (cachedMapForSelection == null) {
@@ -272,17 +274,17 @@ public class PapyrusTreeContentMergeViewer extends TreeContentMergeViewer {
 			switch (side) {
 				case LEFT:
 					if (leftContentComputations == null) {
-						leftContentComputations = new LinkedList<>();
-						leftContentComputations.add(new ElementFunction(side, getLeftMergeViewer(),
-								leftContentComputations, cachedMapForSelection));
+						leftContentComputations = Lists.newLinkedList();
+						leftContentComputations.add(new ElementFunction(side, viewer, leftContentComputations,
+								cachedMapForSelection));
 					}
 					contentComputations = leftContentComputations;
 					break;
 
 				case RIGHT:
 					if (rightContentComputations == null) {
-						rightContentComputations = new LinkedList<>();
-						rightContentComputations.add(new ElementFunction(side, getRightMergeViewer(),
+						rightContentComputations = Lists.newLinkedList();
+						rightContentComputations.add(new ElementFunction(side, viewer,
 								rightContentComputations, cachedMapForSelection));
 					}
 					contentComputations = rightContentComputations;
