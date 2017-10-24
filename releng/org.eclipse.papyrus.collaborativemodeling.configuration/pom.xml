@@ -31,6 +31,7 @@
 		<eclipse.targetrelease>oxygen</eclipse.targetrelease>
 		<target.version>0.7.0-SNAPSHOT</target.version>
 		<os-jvm-flags/>
+		<tycho-version>1.0.0</tycho-version>
 	</properties>
 
 	<!-- Collaborative Modeling CI system-->

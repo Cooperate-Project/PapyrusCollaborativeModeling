@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.eclipse.papyrus.compare</groupId>
+		<artifactId>org.eclipse.papyrus.compare.releng</artifactId>
+		<version>0.7.0-SNAPSHOT</version>
+	</parent>
+	
+	<properties>
+		<target.file>${target.folder}/compare-release</target.file>
+	</properties>
+	
+	<artifactId>org.eclipse.papyrus.compare.bundles.parent</artifactId>
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>org.eclipse.papyrus.compare.diagram</module>
+		<module>org.eclipse.papyrus.compare.diagram.ide.ui</module>
+		<module>org.eclipse.papyrus.compare.feature</module>
+		<module>org.eclipse.papyrus.compare.uml2</module>
+		<module>org.eclipse.papyrus.compare.uml2.edit</module>
+	</modules>
+</project>

@@ -1,0 +1,19 @@
+target "Compare Target Platform - Nightly, Tests" with requirements
+
+include "compare-nightly.tpd"
+
+location "https://hudson.eclipse.org/papyrus/job/Papyrus-Master-Developer/lastSuccessfulBuild/artifact/repository/" {
+	org.eclipse.papyrus.junit.utils lazy
+	org.eclipse.papyrus.junit.framework lazy
+}
+
+//required for Compare test ProfileMigrationTest 
+
+location sysml "http://download.eclipse.org/modeling/mdt/papyrus/components/sysml14/oxygen" {
+	org.eclipse.papyrus.sysml14 lazy
+}
+
+location emfCompare "http://download.eclipse.org/modeling/emf/compare/updates/nightly/latest" {
+	org.eclipse.emf.compare.rcp.ui.source.feature.group lazy
+	org.eclipse.emf.compare.tests.source.feature.group lazy
+}

@@ -1,0 +1,10 @@
+target "Compare Target Platform - Release" with requirements
+
+include "compare-release-base.tpd"
+
+location papyrus "http://download.eclipse.org/modeling/mdt/papyrus/updates/releases/oxygen" {
+	org.eclipse.papyrus.sdk.feature.feature.group
+	org.eclipse.papyrus.infra.gmfdiag.feature.feature.group
+	org.eclipse.papyrus.infra.services.feature.feature.group
+	org.eclipse.papyrus.views.properties.toolsmiths
+}
