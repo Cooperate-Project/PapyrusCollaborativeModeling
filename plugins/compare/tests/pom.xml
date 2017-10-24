@@ -11,7 +11,7 @@
 	<packaging>pom</packaging>
 	
 	<properties>
-		<target.file>${target.folder}/compare.tests-release</target.file>
+		<target.file>${target.folder}/compare.tests-${target.stream}</target.file>
 	</properties>
 	
 	<build>
