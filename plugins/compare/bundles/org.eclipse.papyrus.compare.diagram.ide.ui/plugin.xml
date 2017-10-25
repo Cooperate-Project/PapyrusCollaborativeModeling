@@ -125,4 +125,12 @@
             priority="50">
       </helper>
    </extension>
+   <extension
+         point="org.eclipse.emf.compare.rcp.ui.groups">
+     <group
+            class="org.eclipse.papyrus.compare.diagram.ide.ui.internal.structuremergeviewer.groups.PapyrusGroupProvider"
+            label="Default (Papyrus)"
+            rank="140">
+      </group>
+   </extension>
 </plugin>

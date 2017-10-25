@@ -8,6 +8,7 @@
  * Contributors:
  *     Stefan Dirix - initial API and implementation
  *     Philip Langer - check for DI files in IComparisonScope2.getAllInvolvedResourceURIs
+ *     Christian W. Damus - bug 516257
  *******************************************************************************/
 package org.eclipse.papyrus.compare.diagram.ide.ui.internal.context;
 
@@ -26,8 +27,11 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.compare.Comparison;
 import org.eclipse.emf.compare.MatchResource;
 import org.eclipse.emf.compare.scope.IComparisonScope2;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.papyrus.infra.core.resource.sasheditor.DiModel;
+import org.eclipse.papyrus.uml.tools.model.UmlModel;
+import org.eclipse.uml2.uml.Element;
 
 /**
  * Helper class for determining the context of a comparison.
@@ -60,6 +64,23 @@ public final class PapyrusContextUtil {
 				}
 			}
 			return uriString;
+		}
+	};
+
+	/**
+	 * Predicate testing whether a {@link Resource} is a UML resource.
+	 */
+	private static final Predicate<Resource> IS_UML_RESOURCE = new Predicate<Resource>() {
+		public boolean apply(Resource input) {
+			if (input == null) {
+				// Null is not an UML resource
+				return false;
+			}
+
+			URI uri = input.getURI();
+			return (uri != null) && UmlModel.UML_FILE_EXTENSION.equals(uri.fileExtension())
+					&& !input.getContents().isEmpty() //
+					&& input.getContents().get(0) instanceof Element;
 		}
 	};
 
@@ -117,5 +138,14 @@ public final class PapyrusContextUtil {
 	 */
 	private static boolean containsPapyrusURI(Collection<String> uris) {
 		return any(uris, ENDS_WITH_PAPYRUS_EXTENSION);
+	}
+
+	/**
+	 * Obtains a predicate testing whether a resource is a UML resource.
+	 * 
+	 * @return the UML resource predicate
+	 */
+	public static Predicate<Resource> isUMLResource() {
+		return IS_UML_RESOURCE;
 	}
 }
