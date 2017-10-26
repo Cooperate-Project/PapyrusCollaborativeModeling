@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Collaborative Modeling Target Platform" sequenceNumber="1508337493">
+<target name="Collaborative Modeling Target Platform" sequenceNumber="1509048864">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.platform.feature.group" version="0.0.0"/>
@@ -12,8 +12,11 @@
       <unit id="org.eclipse.equinox.executable.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.draw2d" version="0.0.0"/>
       <unit id="org.eclipse.gef" version="0.0.0"/>
-      <unit id="org.eclipse.xwt" version="0.0.0"/>
       <repository id="eclipse-oxygen" location="http://download.eclipse.org/releases/oxygen/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.xwt" version="0.0.0"/>
+      <repository id="xwt" location="http://download.eclipse.org/xwt/updates/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.egit.feature.group" version="4.9.0.201710071750-r"/>
