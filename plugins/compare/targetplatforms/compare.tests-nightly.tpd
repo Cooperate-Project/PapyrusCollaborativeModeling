@@ -1,4 +1,4 @@
-target "Compare Target Platform - Nightly, Tests" with requirements
+target "Compare Target Platform - Nightly, Tests" with source requirements
 
 include "compare-nightly.tpd"
 

@@ -12,6 +12,17 @@
 	<version>0.7.0-SNAPSHOT</version>
 	<packaging>eclipse-repository</packaging>
 
+	<pluginRepositories>
+		<pluginRepository>
+			<id>jboss-public-repository-group</id>
+			<name>JBoss Public Repository Group</name>
+			<url>http://repository.jboss.org/nexus/content/groups/public/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -21,6 +32,26 @@
 				<configuration>
 					<includePackedArtifacts>true</includePackedArtifacts>
 				</configuration>
+			</plugin>
+			<!-- workaround https://bugs.eclipse.org/bugs/show_bug.cgi?id=453708 -->
+			<plugin>
+				<groupId>org.jboss.tools.tycho-plugins</groupId>
+				<artifactId>repository-utils</artifactId>
+				<version>1.0.0</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>generate-repository-facade</goal>
+						</goals>
+						<configuration>
+							<associateSites>
+								<associateSite>${emf-compare.p2.repo}</associateSite>
+								<associateSite>${egit.p2.repo}</associateSite>
+							</associateSites>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

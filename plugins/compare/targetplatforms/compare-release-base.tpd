@@ -2,7 +2,7 @@
 //Papyrus tests need the Nightlies, whereas we want to build against the Release. We can't mix both in a single TP.
 //So we need a generic base TP that excludes Papyrus, then Main and Tests will add the version of Papyrus they need
 
-target "Compare Target Platform - Base for Release" with requirements
+target "Compare Target Platform - Base for Release" with source requirements
 
 location "http://download.eclipse.org/releases/oxygen/" eclipse-oxygen {
 	org.eclipse.platform.feature.group
@@ -22,13 +22,17 @@ location "http://download.eclipse.org/releases/oxygen/" eclipse-oxygen {
 	org.eclipse.gmf.runtime.notation.sdk.feature.group
 	org.eclipse.gmf.runtime.sdk.feature.group
 	org.eclipse.uml2.sdk.feature.group
+	org.eclipse.egit.feature.group
+	org.eclipse.jgit.feature.group
+}
+
+location "http://download.eclipse.org/modeling/emf/compare/updates/releases/3.3/R201709090201" emfCompare {
 	org.eclipse.emf.compare.source.feature.group
 	org.eclipse.emf.compare.diagram.gmf.source.feature.group
 	org.eclipse.emf.compare.uml2.feature.group 
 	org.eclipse.emf.compare.egit.feature.group 
-	org.eclipse.emf.compare.ide.ui.feature.group 
-	org.eclipse.egit.feature.group
-	org.eclipse.jgit.feature.group
+	org.eclipse.emf.compare.ide.ui.feature.group
+	org.eclipse.emf.compare.rcp.ui.feature.group
 }
 
 //manualUpdate

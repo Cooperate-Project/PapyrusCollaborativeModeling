@@ -1,4 +1,4 @@
-target "Compare Target Platform - Release" with requirements
+target "Compare Target Platform - Release" with source requirements
 
 include "compare-release-base.tpd"
 
