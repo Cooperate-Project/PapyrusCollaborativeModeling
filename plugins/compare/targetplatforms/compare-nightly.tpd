@@ -38,7 +38,7 @@ location xwt "http://download.eclipse.org/xwt/updates" {
  * If changed, this should also be changed in Papyrus Compare's root pom.xml, in the nightly profile
  * Search all references to emf-compare.p2.repo
  */
-location emfCompare "http://download.eclipse.org/modeling/emf/compare/updates/nightly/latest" {
+location emfCompare "http://download.eclipse.org/modeling/emf/compare/updates/logical/emf.compare/nightly/latest/" {
 	org.eclipse.emf.compare.feature.group lazy
 	org.eclipse.emf.compare.diagram.gmf.feature.group lazy
 	org.eclipse.emf.compare.uml2.feature.group lazy

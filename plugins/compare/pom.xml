@@ -40,8 +40,8 @@
 		<env.ui.test>-Xms256m -Xmx1024m</env.ui.test>
 
 		<!-- P2 Repo References -->
-		<egit.p2.repo>http://download.eclipse.org/releases/oxygen/</egit.p2.repo>
-		<emf-compare.p2.repo>http://download.eclipse.org/modeling/emf/compare/updates/releases/3.3/R201709090201</emf-compare.p2.repo>
+		<egit.p2.repo>http://download.eclipse.org/egit/updates</egit.p2.repo>
+		<emf-compare.p2.repo>http://download.eclipse.org/modeling/emf/compare/updates/logical/emf.compare/integration/</emf-compare.p2.repo>
 	</properties>
 
 	<pluginRepositories>
@@ -379,7 +379,7 @@
 			</activation>
 			<properties>
 				<egit.p2.repo>http://download.eclipse.org/egit/updates</egit.p2.repo>
-				<emf-compare.p2.repo>http://download.eclipse.org/modeling/emf/compare/updates/nightly/latest</emf-compare.p2.repo>
+				<emf-compare.p2.repo>http://download.eclipse.org/modeling/emf/compare/updates/logical/emf.compare/integration/</emf-compare.p2.repo>
 			</properties>
 		</profile>
 	</profiles>

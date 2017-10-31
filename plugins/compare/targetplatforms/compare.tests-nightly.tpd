@@ -13,7 +13,7 @@ location sysml "http://download.eclipse.org/modeling/mdt/papyrus/components/sysm
 	org.eclipse.papyrus.sysml14 lazy
 }
 
-location emfCompare "http://download.eclipse.org/modeling/emf/compare/updates/nightly/latest" {
+location emfCompare "http://download.eclipse.org/modeling/emf/compare/updates/logical/emf.compare/nightly/latest/" {
 	org.eclipse.emf.compare.rcp.ui.source.feature.group lazy
 	org.eclipse.emf.compare.tests.source.feature.group lazy
 }

@@ -22,11 +22,14 @@ location "http://download.eclipse.org/releases/oxygen/" eclipse-oxygen {
 	org.eclipse.gmf.runtime.notation.sdk.feature.group
 	org.eclipse.gmf.runtime.sdk.feature.group
 	org.eclipse.uml2.sdk.feature.group
+}
+
+location "http://download.eclipse.org/egit/updates" egit {
 	org.eclipse.egit.feature.group
 	org.eclipse.jgit.feature.group
 }
 
-location "http://download.eclipse.org/modeling/emf/compare/updates/releases/3.3/R201709090201" emfCompare {
+location "http://download.eclipse.org/modeling/emf/compare/updates/logical/emf.compare/integration/" emfCompare {
 	org.eclipse.emf.compare.source.feature.group
 	org.eclipse.emf.compare.diagram.gmf.source.feature.group
 	org.eclipse.emf.compare.uml2.feature.group 

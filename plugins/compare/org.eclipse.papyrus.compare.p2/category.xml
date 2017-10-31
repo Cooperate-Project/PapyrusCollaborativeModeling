@@ -13,6 +13,6 @@
    </category-def>
    <!-- This is currently ignored by Tycho, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=453708 -->
    <!-- We add those sites in the root pom.xml now instead as a workaround -->
-   <repository-reference location="http://download.eclipse.org/releases/oxygen/" enabled="true" />
-   <repository-reference location="http://download.eclipse.org/modeling/emf/compare/updates/releases/3.3/R201709090201" enabled="true" />
+   <repository-reference location="http://download.eclipse.org/egit/updates" enabled="true" />
+   <repository-reference location="http://download.eclipse.org/modeling/emf/compare/updates/logical/emf.compare/integration/" enabled="true" />
 </site>

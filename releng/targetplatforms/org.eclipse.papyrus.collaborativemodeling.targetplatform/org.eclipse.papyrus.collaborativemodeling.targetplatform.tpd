@@ -150,7 +150,7 @@ location uml "http://download.eclipse.org/modeling/mdt/uml2/updates/5.3" {
 }
 
 //updateFrom("EMF COMPARE",0) 
-location emfCompare "http://download.eclipse.org/modeling/emf/compare/updates/logical/emf.compare/nightly/latest" {
+location emfCompare "http://download.eclipse.org/modeling/emf/compare/updates/logical/emf.compare/nightly/latest/" {
 	org.eclipse.emf.compare.source.feature.group lazy
 	org.eclipse.emf.compare.diagram.gmf.source.feature.group lazy
 	org.eclipse.emf.compare.uml2.source.feature.group lazy
@@ -158,6 +158,7 @@ location emfCompare "http://download.eclipse.org/modeling/emf/compare/updates/lo
 	org.eclipse.emf.compare.ide.ui.source.feature.group lazy
 	org.eclipse.emf.compare.rcp.ui.source.feature.group	lazy
 	org.eclipse.emf.compare.tests.source.feature.group lazy
+	org.eclipse.emf.compare.feature.group lazy
 }
 //required for Compare test ProfileMigrationTest 
 location sysml "http://download.eclipse.org/modeling/mdt/papyrus/components/sysml14" {

@@ -29,7 +29,7 @@ location sysml "http://download.eclipse.org/modeling/mdt/papyrus/components/sysm
 	org.eclipse.papyrus.sysml14 
 }
 
-location emfCompare "http://download.eclipse.org/modeling/emf/compare/updates/releases/3.3/R201709090201" {
+location emfCompare "http://download.eclipse.org/modeling/emf/compare/updates/logical/emf.compare/integration/" {
 	org.eclipse.emf.compare.tests.source.feature.group  
 	org.eclipse.emf.compare.uml2.source.feature.group
 }
