@@ -30,12 +30,12 @@ location "http://download.eclipse.org/egit/updates" egit {
 }
 
 location "http://download.eclipse.org/modeling/emf/compare/updates/logical/emf.compare/integration/" emfCompare {
-	org.eclipse.emf.compare.source.feature.group
-	org.eclipse.emf.compare.diagram.gmf.source.feature.group
-	org.eclipse.emf.compare.uml2.feature.group 
-	org.eclipse.emf.compare.egit.feature.group 
-	org.eclipse.emf.compare.ide.ui.feature.group
-	org.eclipse.emf.compare.rcp.ui.feature.group
+	org.eclipse.emf.compare.source.feature.group lazy
+	org.eclipse.emf.compare.diagram.gmf.source.feature.group lazy
+	org.eclipse.emf.compare.uml2.feature.group lazy
+	org.eclipse.emf.compare.egit.feature.group lazy
+	org.eclipse.emf.compare.ide.ui.feature.group lazy
+	org.eclipse.emf.compare.rcp.ui.feature.group lazy
 }
 
 //manualUpdate
