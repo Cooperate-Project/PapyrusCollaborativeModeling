@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 Obeo and others.
+ * Copyright (c) 2016, 2017 Obeo and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,7 @@
  *     Obeo - initial API and implementation
  *     Philip Langer - added further tests
  *     Alexandra Buzila - additional tests
+ *     Christian W. Damus - bug 526932
  *******************************************************************************/
 package org.eclipse.papyrus.compare.diagram.tests.suite;
 
@@ -24,6 +25,7 @@ import org.eclipse.papyrus.compare.diagram.tests.egit.ResourceAttachmentChangeAd
 import org.eclipse.papyrus.compare.diagram.tests.egit.ResourceAttachmentChangeAdd2GitMergeTest;
 import org.eclipse.papyrus.compare.diagram.tests.egit.ResourceAttachmentChangeDelete1GitMergeTest;
 import org.eclipse.papyrus.compare.diagram.tests.egit.ResourceAttachmentChangeDelete2GitMergeTest;
+import org.eclipse.papyrus.compare.diagram.tests.egit.StereotypeApplicationsInSubunitsTest;
 import org.eclipse.papyrus.compare.diagram.tests.egit.StereotypeConflictTest;
 import org.eclipse.papyrus.compare.diagram.tests.egit.mergeresolution.MergeResolutionManagerTest;
 import org.eclipse.papyrus.compare.diagram.tests.merge.AdditiveMergeDiagramTests;
@@ -48,7 +50,7 @@ import org.junit.runners.Suite.SuiteClasses;
 		ResourceAttachmentChangeMoveNoConflictTests.class, ResourceAttachmentChangeMoveOrderTests.class,
 		StereotypeConflictTest.class, IgnoreDiFileChangesInGitMergeTest.class,
 		MoveOfDiagramConflictDetectionTest.class, AdditiveMergeDiagramTests.class,
-		MergeResolutionManagerTest.class, })
+		MergeResolutionManagerTest.class, StereotypeApplicationsInSubunitsTest.class })
 public class PapyrusGitTests {
 
 	@BeforeClass

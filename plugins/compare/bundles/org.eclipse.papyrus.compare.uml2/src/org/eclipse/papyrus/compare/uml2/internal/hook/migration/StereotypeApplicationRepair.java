@@ -11,6 +11,7 @@
  *     Laurent Delaigue - bug 498583
  *     Martin Fleck - bug 515041
  *     Philip Langer - bug 516484
+ *     Christian W. Damus - bug 526932
  *******************************************************************************/
 package org.eclipse.papyrus.compare.uml2.internal.hook.migration;
 
@@ -107,6 +108,9 @@ public class StereotypeApplicationRepair extends StereotypeApplicationRepairSnip
 	 * Disposed the instance.
 	 */
 	public void dispose() {
+		// Detach it from its wrapped resource set
+		fModelSet.detach();
+
 		dispose(this.fModelSet);
 	}
 
@@ -290,8 +294,7 @@ public class StereotypeApplicationRepair extends StereotypeApplicationRepairSnip
 		if (isFieldMissing()) {
 			// fail silently but log warning
 			UMLPapyrusComparePlugin.getDefault().getLog().log(new Status(IStatus.WARNING,
-					UMLPapyrusComparePlugin.PLUGIN_ID,
-					"Unable to analyze and repair resource " + fResource //$NON-NLS-1$
+					UMLPapyrusComparePlugin.PLUGIN_ID, "Unable to analyze and repair resource " + fResource //$NON-NLS-1$
 							+ " due to missing field: {resource=" + fResource + ", labelProviderService=" //$NON-NLS-1$ //$NON-NLS-2$
 							+ fLabelProviderService + ", profileSupplier=" + fProfileSupplier + "}")); //$NON-NLS-1$//$NON-NLS-2$
 			return null;
