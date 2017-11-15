@@ -10,6 +10,7 @@
  *     Stefan Dirix - add ModelExtensionUtil, SaveParameterHook and URIAttachment tests
  *     Philip Langer - add IngoreDiFileModelElementsTest
  *     Martin Fleck - add MergeNonConflictingCascadingDifferencesFilterTest
+ *     Christian W. Damus - bug 512529
  *******************************************************************************/
 package org.eclipse.papyrus.compare.diagram.tests.suite;
 
@@ -21,6 +22,7 @@ import org.eclipse.gmf.runtime.emf.core.resources.GMFResourceFactory;
 import org.eclipse.gmf.runtime.notation.NotationPackage;
 import org.eclipse.papyrus.compare.diagram.tests.comparison.DiagramTooltipProviderTest;
 import org.eclipse.papyrus.compare.diagram.tests.context.PapyrusContextUtilTest;
+import org.eclipse.papyrus.compare.diagram.tests.css.CSSTest;
 import org.eclipse.papyrus.compare.diagram.tests.difile.IgnoreDiFilePostProcessorTest;
 import org.eclipse.papyrus.compare.diagram.tests.groups.PapyrusConflictsGroupProviderTests;
 import org.eclipse.papyrus.compare.diagram.tests.merge.AssocMergeTest;
@@ -52,7 +54,9 @@ import org.junit.runners.Suite.SuiteClasses;
 		SaveParameterHookTest.class, SaveParameterHookIntegrationTest.class, URIAttachmentTest.class,
 		DiagramTooltipProviderTest.class, PapyrusConflictsGroupProviderTests.class,
 		IgnoreDiFilePostProcessorTest.class, PapyrusContextUtilTest.class,
-		MergeNonConflictingCascadingFilterTest.class, MergeDiffInvolvingRefineDiffTest.class, })
+		MergeNonConflictingCascadingFilterTest.class, MergeDiffInvolvingRefineDiffTest.class, //
+		CSSTest.class, //
+})
 public class AllTests {
 
 	@BeforeClass
