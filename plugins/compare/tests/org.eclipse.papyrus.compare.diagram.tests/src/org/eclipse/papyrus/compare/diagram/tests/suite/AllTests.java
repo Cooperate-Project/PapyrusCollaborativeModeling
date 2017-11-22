@@ -10,7 +10,7 @@
  *     Stefan Dirix - add ModelExtensionUtil, SaveParameterHook and URIAttachment tests
  *     Philip Langer - add IngoreDiFileModelElementsTest
  *     Martin Fleck - add MergeNonConflictingCascadingDifferencesFilterTest
- *     Christian W. Damus - bug 512529
+ *     Christian W. Damus - bugs 512529, 527638
  *******************************************************************************/
 package org.eclipse.papyrus.compare.diagram.tests.suite;
 
@@ -29,6 +29,8 @@ import org.eclipse.papyrus.compare.diagram.tests.merge.AssocMergeTest;
 import org.eclipse.papyrus.compare.diagram.tests.merge.EdgeMergeTest;
 import org.eclipse.papyrus.compare.diagram.tests.merge.NodeMergeTest;
 import org.eclipse.papyrus.compare.diagram.tests.merge.sysml.MergeDiffInvolvingRefineDiffTest;
+import org.eclipse.papyrus.compare.diagram.tests.migration.DiagramMigrationHookIntegrationTest;
+import org.eclipse.papyrus.compare.diagram.tests.migration.DiagramMigrationHookTest;
 import org.eclipse.papyrus.compare.diagram.tests.modelextension.ModelExtensionUtilTest;
 import org.eclipse.papyrus.compare.diagram.tests.saveparameter.SaveParameterHookIntegrationTest;
 import org.eclipse.papyrus.compare.diagram.tests.saveparameter.SaveParameterHookTest;
@@ -56,6 +58,7 @@ import org.junit.runners.Suite.SuiteClasses;
 		IgnoreDiFilePostProcessorTest.class, PapyrusContextUtilTest.class,
 		MergeNonConflictingCascadingFilterTest.class, MergeDiffInvolvingRefineDiffTest.class, //
 		CSSTest.class, //
+		DiagramMigrationHookTest.class, DiagramMigrationHookIntegrationTest.class, //
 })
 public class AllTests {
 

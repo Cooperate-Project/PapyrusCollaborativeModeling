@@ -26,7 +26,7 @@
 						<include>org/eclipse/papyrus/compare/diagram/tests/suite/PapyrusGitTests.class</include>
 					</includes>
 					<useUIHarness>true</useUIHarness>
-					<argLine>-Xmx2048m</argLine>
+					<argLine>${test-vmargs} -Xmx2048m</argLine>
 				</configuration>
 			</plugin>
 		</plugins>

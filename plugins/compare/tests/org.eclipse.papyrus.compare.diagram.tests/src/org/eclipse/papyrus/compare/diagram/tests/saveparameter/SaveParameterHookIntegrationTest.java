@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 EclipseSource Muenchen GmbH and others.
+ * Copyright (c) 2015, 2017 EclipseSource Muenchen GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,10 +7,13 @@
  * 
  * Contributors:
  *     Stefan Dirix - initial API and implementation
+ *     Christian W. Damus - bug 527638
  *******************************************************************************/
 package org.eclipse.papyrus.compare.diagram.tests.saveparameter;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.fail;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
@@ -22,12 +25,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.compare.ide.ui.internal.logical.ComparisonScopeBuilder;
@@ -40,6 +46,9 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.URIConverter;
 import org.eclipse.emf.ecore.resource.impl.ExtensibleURIConverterImpl;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.xmi.XMLResource;
+import org.eclipse.papyrus.compare.diagram.ide.ui.internal.DiagramMigrationHook;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +60,7 @@ import org.osgi.framework.Bundle;
  * 
  * @author Stefan Dirix <sdirix@eclipsesource.com>
  */
-@SuppressWarnings("restriction")
+@SuppressWarnings({"restriction", "nls" })
 public class SaveParameterHookIntegrationTest {
 
 	/**
@@ -120,22 +129,39 @@ public class SaveParameterHookIntegrationTest {
 
 		final List<IFile> originalFiles = new ArrayList<IFile>(fileNames.size());
 		final List<IFile> saveFiles = new ArrayList<IFile>(fileNames.size());
-		final List<String> platformURIStrings = new ArrayList<String>(fileNames.size());
+		final List<URI> originalResourceURIs = new ArrayList<>(fileNames.size());
+		final List<String> saveResourceURIStrings = new ArrayList<>(fileNames.size());
+		final Map<IFile, IFile> originalToSaveMap = new HashMap<>();
 
-		// copy files twice
+		// Create originals
 		for (String fileName : fileNames) {
 			final String path = BASE_PATH + localContainer + fileName;
 			final URI fileURI = getFileUri(bundle.getEntry(path));
 			final IFile originalFile = project.createFile("original/" + fileName, getInputStream(fileURI));
-			final IFile saveFile = project.createFile("save/" + fileName, getInputStream(fileURI));
+			final IFile saveFile = project.getProject().getFile(new Path("save/" + fileName));
+			originalToSaveMap.put(originalFile, saveFile);
+
 			originalFiles.add(originalFile);
+			originalResourceURIs
+					.add(URI.createPlatformResourceURI(originalFile.getFullPath().toString(), true));
+		}
+
+		// Run diagram migrations as needed, to avoid those introducing changes
+		migrateDiagrams(originalResourceURIs);
+
+		// Copy the migrated files. Be careful to maintain ordering
+		project.createFolder("save");
+		for (IFile originalFile : originalFiles) {
+			IFile saveFile = originalToSaveMap.get(originalFile);
+			saveFile.create(originalFile.getContents(true), true, null);
 			saveFiles.add(saveFile);
-			platformURIStrings.add("platform:/resource/" + TEST_PROJECT_NAME + "/save/" + fileName);
+			saveResourceURIStrings
+					.add(URI.createPlatformResourceURI(saveFile.getFullPath().toString(), true).toString());
 		}
 
 		// build comparison scope which uses the internal resource sets of EMF Compare
 		final StorageTraversal traversal = ProfileTestUtil
-				.createStorageTraversal(platformURIStrings.toArray(new String[0]));
+				.createStorageTraversal(saveResourceURIStrings.toArray(new String[0]));
 		final SynchronizationModel syncModel = new SynchronizationModel(traversal, traversal, null);
 		final IComparisonScope scope = ComparisonScopeBuilder.create(syncModel, new NullProgressMonitor());
 
@@ -149,7 +175,7 @@ public class SaveParameterHookIntegrationTest {
 		for (int i = 0; i < fileNames.size(); i++) {
 			final IFile originalFile = originalFiles.get(i);
 			final IFile saveFile = saveFiles.get(i);
-			assertTrue(compareTextContent(originalFile, saveFile));
+			compareTextContent(originalFile, saveFile, true);
 		}
 	}
 
@@ -165,11 +191,15 @@ public class SaveParameterHookIntegrationTest {
 	 * @throws IOException
 	 *             When there is an error reading one of the files.
 	 */
-	private boolean compareTextContent(IFile fileA, IFile fileB) throws IOException {
+	private void compareTextContent(IFile fileA, IFile fileB, boolean expectedEqual) throws IOException {
 		final String textFileA = removeCRCharacters(getText(fileA));
 		final String textFileB = removeCRCharacters(getText(fileB));
 
-		return textFileA.equals(textFileB);
+		if (expectedEqual) {
+			assertEquals(textFileB, textFileA);
+		} else {
+			assertNotEquals(textFileB, textFileA);
+		}
 	}
 
 	/**
@@ -247,5 +277,41 @@ public class SaveParameterHookIntegrationTest {
 	@After
 	public void disposeProject() throws CoreException, IOException {
 		project.dispose();
+	}
+
+	/**
+	 * Migrate the diagrams in a bunch of resources and save them.
+	 * 
+	 * @param resourceURIs
+	 *            the resources in which to migrate diagrams
+	 */
+	void migrateDiagrams(Collection<URI> resourceURIs) {
+		ResourceSet rset = new ResourceSetImpl();
+
+		DiagramMigrationHook hook = new DiagramMigrationHook();
+		for (URI next : resourceURIs) {
+			rset.getResource(next, true);
+		}
+
+		hook.postLoadingHook(rset, resourceURIs);
+
+		// Save the migrations. Note that the original test resources have the
+		// redundant XMI types, so preserve those
+		Map<Object, Object> saveOptions = new HashMap<>();
+		saveOptions.put(XMLResource.OPTION_SAVE_TYPE_INFORMATION, Boolean.TRUE);
+		saveOptions.put(Resource.OPTION_SAVE_ONLY_IF_CHANGED, Boolean.TRUE);
+		for (Resource next : rset.getResources()) {
+			try {
+				next.save(saveOptions);
+			} catch (IOException e) {
+				e.printStackTrace();
+				fail("Failed to save migrated diagram(s): " + e.getMessage());
+			}
+		}
+
+		for (Resource next : rset.getResources()) {
+			next.unload();
+		}
+		rset.getResources().clear();
 	}
 }

@@ -13,6 +13,7 @@
      Stefan Dirix - Bugs 456699, 474723
      Camille Letavernier - Bug 515373
      Christian W. Damus - bug 512529
+     Simon Delisle - bug 217638
 -->
 
 <plugin>
@@ -35,6 +36,9 @@
       </resourceSetHook>
       <resourceSetHook
             class="org.eclipse.papyrus.compare.diagram.ide.ui.internal.ServicesRegistryInitializingHook">
+      </resourceSetHook>
+      <resourceSetHook
+            class="org.eclipse.papyrus.compare.diagram.ide.ui.internal.DiagramMigrationHook">
       </resourceSetHook>
    </extension>
    <extension

@@ -12,7 +12,23 @@
 	
 	<properties>
 		<target.file>${target.folder}/compare.tests-${target.stream}</target.file>
+		<test-vmargs></test-vmargs>
 	</properties>
+	
+	<profiles>
+		<profile>
+			<id>mac-test</id>
+			<activation>
+				<os>
+					<family>mac</family>
+				</os>
+			</activation>
+			<properties>
+				<target.file>${target.folder}/compare.tests-${target.stream}</target.file>
+				<test-vmargs>-XstartOnFirstThread</test-vmargs>
+			</properties>
+		</profile>
+	</profiles>
 	
 	<build>
 		<plugins>
@@ -21,10 +37,10 @@
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<configuration>
 					<useUIHarness>true</useUIHarness>
+					<argLine>${test-vmargs}</argLine>
 				</configuration>
 			</plugin>
 		</plugins>
-		
 	</build>
 	<modules>
 		<module>org.eclipse.papyrus.compare.uml2.tests</module>
