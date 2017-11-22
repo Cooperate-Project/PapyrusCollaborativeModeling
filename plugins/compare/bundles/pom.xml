@@ -17,5 +17,6 @@
 		<module>org.eclipse.papyrus.compare.feature</module>
 		<module>org.eclipse.papyrus.compare.uml2</module>
 		<module>org.eclipse.papyrus.compare.uml2.edit</module>
+		<module>org.eclipse.papyrus.compare.egit.ui</module>
 	</modules>
 </project>
