@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.papyrus.compare.diagram.ide.ui.contentmergeviewer.facet;
 
+import static com.google.common.base.Predicates.instanceOf;
+import static com.google.common.base.Predicates.not;
+import static com.google.common.collect.Collections2.filter;
 import static org.eclipse.papyrus.compare.diagram.ide.ui.contentmergeviewer.facet.FacetUtil.UN_WRAP;
 
 import com.google.common.collect.ImmutableSet;
@@ -29,6 +32,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
+import org.eclipse.gmf.runtime.notation.Diagram;
 import org.eclipse.papyrus.uml.tools.providers.SemanticUMLContentProvider;
 import org.eclipse.uml2.uml.Element;
 import org.eclipse.uml2.uml.Profile;
@@ -133,7 +137,9 @@ public class PapyrusFacetContentProviderWrapper extends ItemProviderAdapter impl
 	@Override
 	public Collection<?> getChildren(Object object) {
 		// we need to remove duplicates since the facet mechanism sometimes introduces them
-		return removeDuplicates(unwrapFacet(facetContentProvider.getChildren(object)));
+		// additionally we also need to remove diagram elements
+		return filter(removeDuplicates(unwrapFacet(facetContentProvider.getChildren(object))),
+				not(instanceOf(Diagram.class)));
 	}
 
 	@Override
