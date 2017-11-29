@@ -82,9 +82,11 @@ public class PapyrusMergeViewerItemContentProvider extends TreeMergeViewerItemCo
 
 		// Try to get the parent but do not return a parent which could be filtered away
 		Object sideValue = getBestSideValue(mergeViewerItem, configuration.getSide());
-		Object parent = getUnfilteredParent(sideValue, configuration);
-		if (parent != null) {
-			return parent;
+		if (sideValue != null) {
+			Object parent = getUnfilteredParent(sideValue, configuration);
+			if (parent != null) {
+				return parent;
+			}
 		}
 
 		// fallback
