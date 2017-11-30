@@ -12,6 +12,7 @@
      Obeo - initial API and implementation
      Stefan Dirix - Bugs 456699, 474723
      Camille Letavernier - Bug 515373
+     Christian W. Damus - bug 512529
 -->
 
 <plugin>
@@ -116,5 +117,12 @@
             description="Technical elements of Papyrus diagrams such as hidden applied stereotype comments shapes and links."
             label="Papyrus diagram technical elements">
       </filter>
+   </extension>
+   <extension
+         point="org.eclipse.papyrus.infra.viewpoints.policy.viewType">
+      <helper
+            class="org.eclipse.papyrus.compare.diagram.ide.ui.internal.helper.CompareDiagramViewTypeHelper"
+            priority="50">
+      </helper>
    </extension>
 </plugin>

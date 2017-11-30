@@ -8,6 +8,7 @@
  * Contributors:
  *     Martin Fleck - initial API and implementation
  *     Christian W. Damus - bug 526932
+ *     Christian W. Damus - bug 512529
  *******************************************************************************/
 package org.eclipse.papyrus.compare.uml2.internal.hook.migration;
 
@@ -130,8 +131,20 @@ public class ModelSetWrapper extends ModelSet {
 	/**
 	 * Detaches me from the resource-set that I wrap.
 	 */
-	void detach() {
+	public void detach() {
 		((ProxyingResourceList)resources).detach();
+	}
+
+	/**
+	 * Directly set the model-set's URI without initializing the entire pluggable models and snippets
+	 * infrastructure.
+	 * 
+	 * @param uriWithoutExtension
+	 *            the URI without the file extension
+	 */
+	@Override
+	public void setURIWithoutExtension(URI uriWithoutExtension) {
+		super.setURIWithoutExtension(uriWithoutExtension);
 	}
 
 	//

@@ -24,9 +24,11 @@ location xwt "http://download.eclipse.org/xwt/updates" {
 }
 
 
-//required for Compare test ProfileMigrationTest 
-location sysml "http://download.eclipse.org/modeling/mdt/papyrus/components/sysml14/oxygen" {
-	org.eclipse.papyrus.sysml14 
+// Required for Compare test ProfileMigrationTest and Architecture Framework support tests
+// NOTE that this is a volatile Hudson build archive. It should be replaced by a release
+// build ASAP!  This is only even remote feasible because it is a tests-only dependency.
+location sysml "https://hudson.eclipse.org/papyrus/job/papyrus-sysml-oxygen/lastStableBuild/artifact/releng/org.eclipse.papyrus.sysml14.p2/target/repository/" {
+	org.eclipse.papyrus.sysml14.feature.feature.group lazy
 }
 
 location emfCompare "http://download.eclipse.org/modeling/emf/compare/updates/logical/emf.compare/integration/" {

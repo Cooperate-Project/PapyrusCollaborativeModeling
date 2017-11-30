@@ -61,8 +61,8 @@
       <repository id="xwt" location="http://download.eclipse.org/xwt/updates"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.papyrus.sysml14" version="1.0.0"/>
-      <repository id="sysml" location="http://download.eclipse.org/modeling/mdt/papyrus/components/sysml14/oxygen"/>
+      <unit id="org.eclipse.papyrus.sysml14.feature.feature.group" version="0.0.0"/>
+      <repository id="sysml" location="https://hudson.eclipse.org/papyrus/job/papyrus-sysml-oxygen/lastStableBuild/artifact/releng/org.eclipse.papyrus.sysml14.p2/target/repository/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.emf.compare.tests.source.feature.group" version="0.0.0"/>
