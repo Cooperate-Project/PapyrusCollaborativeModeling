@@ -195,6 +195,9 @@ public class PapyrusTreeContentMergeViewer extends TreeContentMergeViewer {
 			leftContentComputations = null;
 			rightContentComputations = null;
 			cachedMapForSelection = null;
+		} else {
+			getLeftMergeViewer().refresh();
+			getRightMergeViewer().refresh();
 		}
 
 		IMergeViewerItem leftInitialItem = null;
