@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 EclipseSource Muenchen GmbH and others.
+ * Copyright (c) 2016, 2017 EclipseSource Muenchen GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,11 +36,14 @@ import org.eclipse.papyrus.infra.core.resource.sasheditor.DiModel;
  */
 public final class PapyrusContextUtil {
 
+	/** The value ".di". */
+	private static final String DI_FILE_EXTENSION = "." + DiModel.DI_FILE_EXTENSION; //$NON-NLS-1$
+
 	/** Predicate specifying whether the given URI string ends with the Papyrus DI file extension. */
 	private static final Predicate<String> ENDS_WITH_PAPYRUS_EXTENSION = new Predicate<String>() {
 		public boolean apply(String input) {
 			if (input != null) {
-				return input.endsWith(DiModel.DI_FILE_EXTENSION);
+				return input.endsWith(DI_FILE_EXTENSION);
 			}
 			return false;
 		}
