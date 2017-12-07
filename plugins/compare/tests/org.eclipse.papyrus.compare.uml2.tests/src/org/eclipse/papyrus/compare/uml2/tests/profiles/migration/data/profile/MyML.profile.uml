@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Ecore="http://www.eclipse.org/uml2/schemas/Ecore/5" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xsi:schemaLocation="http://www.eclipse.org/uml2/schemas/Ecore/5 pathmap://UML_PROFILES/Ecore.profile.uml#_z1OFcHjqEdy8S4Cr8Rc_NA">
+  <uml:Profile xmi:id="_0" name="MyML" URI="http://www.eclipse.org/papyrus/compare/test/profile/MyML">
+    <packagedElement xmi:type="uml:Profile" xmi:id="Blocks" name="Blocks" URI="http://www.eclipse.org/papyrus/compare/test/profile/MyML/Blocks" metamodelReference="_66AEYNrDEee7OLvZx4fxeQ">
+      <packageImport xmi:id="_66AEYNrDEee7OLvZx4fxeQ">
+        <importedPackage xmi:type="uml:Model" href="pathmap://UML_METAMODELS/UML.metamodel.uml#_0"/>
+      </packageImport>
+      <packagedElement xmi:type="uml:Stereotype" xmi:id="_XGGYoNrCEee7OLvZx4fxeQ" name="Block">
+        <ownedAttribute xmi:id="_opk2cNrCEee7OLvZx4fxeQ" name="base_Class" association="_opkPYNrCEee7OLvZx4fxeQ">
+          <type xmi:type="uml:Class" href="pathmap://UML_METAMODELS/UML.metamodel.uml#Class"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_2hGm8NrCEee7OLvZx4fxeQ" name="isEncapsulated">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Extension" xmi:id="_opkPYNrCEee7OLvZx4fxeQ" name="Class_Block" memberEnd="_opkPYdrCEee7OLvZx4fxeQ _opk2cNrCEee7OLvZx4fxeQ">
+        <ownedEnd xmi:type="uml:ExtensionEnd" xmi:id="_opkPYdrCEee7OLvZx4fxeQ" name="extension_Block" type="_XGGYoNrCEee7OLvZx4fxeQ" aggregation="composite" association="_opkPYNrCEee7OLvZx4fxeQ"/>
+      </packagedElement>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Profile" xmi:id="ModelElements" name="ModelElements" URI="http://www.eclipse.org/papyrus/compare/test/profile/MyML/ModelElements" metamodelReference="_GSJoYNrEEee7OLvZx4fxeQ">
+      <packageImport xmi:id="_GSJoYNrEEee7OLvZx4fxeQ">
+        <importedPackage xmi:type="uml:Model" href="pathmap://UML_METAMODELS/UML.metamodel.uml#_0"/>
+      </packageImport>
+      <packagedElement xmi:type="uml:Stereotype" xmi:id="_pV2toNrCEee7OLvZx4fxeQ" name="Viewpoint">
+        <ownedAttribute xmi:id="_pV2todrCEee7OLvZx4fxeQ" name="base_Class" association="_pV2totrCEee7OLvZx4fxeQ">
+          <type xmi:type="uml:Class" href="pathmap://UML_METAMODELS/UML.metamodel.uml#Class"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_9DLz4NrCEee7OLvZx4fxeQ" name="purpose">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_-sgiINrCEee7OLvZx4fxeQ" value="1"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Extension" xmi:id="_pV2totrCEee7OLvZx4fxeQ" name="Class_Viewpoint" memberEnd="_pV2to9rCEee7OLvZx4fxeQ _pV2todrCEee7OLvZx4fxeQ">
+        <ownedEnd xmi:type="uml:ExtensionEnd" xmi:id="_pV2to9rCEee7OLvZx4fxeQ" name="extension_Viewpoint" type="_pV2toNrCEee7OLvZx4fxeQ" aggregation="composite" association="_pV2totrCEee7OLvZx4fxeQ"/>
+      </packagedElement>
+    </packagedElement>
+    <profileApplication xmi:id="_q_r-8NrSEeeBJPIiEbV_Uw">
+      <eAnnotations xmi:id="_q_wQYNrSEeeBJPIiEbV_Uw" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="pathmap://UML_PROFILES/Ecore.profile.uml#_z1OFcHjqEdy8S4Cr8Rc_NA"/>
+      </eAnnotations>
+      <appliedProfile href="pathmap://UML_PROFILES/Ecore.profile.uml#_0"/>
+    </profileApplication>
+  </uml:Profile>
+  <Ecore:EPackage xmi:id="_sBKqENrSEeeBJPIiEbV_Uw" base_Package="_0" packageName="myml" nsPrefix="my" basePackage="org.eclipse.papyrus.compare.uml2.tests" prefix="MyML"/>
+  <Ecore:EPackage xmi:id="_0V45UNrSEeeBJPIiEbV_Uw" base_Package="Blocks" packageName="blocks" nsPrefix="blk" basePackage="org.eclipse.papyrus.compare.uml2.tests" prefix="Blocks"/>
+  <Ecore:EPackage xmi:id="_6n8GMNrSEeeBJPIiEbV_Uw" base_Package="ModelElements" packageName="elements" nsPrefix="elm" basePackage="org.eclipse.papyrus.compare.uml2.tests" prefix="Elements"/>
+</xmi:XMI>

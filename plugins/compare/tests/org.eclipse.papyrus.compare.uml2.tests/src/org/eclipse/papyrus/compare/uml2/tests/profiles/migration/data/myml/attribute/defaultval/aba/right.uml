@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001"
+    xmlns:blk="http://www.eclipse.org/papyrus/compare/test/profile/MyML/Blocks/1"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:elm="http://www.eclipse.org/papyrus/compare/test/profile/MyML/ModelElements/1"
+    xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML">
+  <uml:Model xmi:id="_j7ML4CdYEea7OLrFgBltsw" name="RootElement">
+    <packagedElement xmi:type="uml:Class" xmi:id="_mPfJwCdYEea7OLrFgBltsw" name="MyBlock"/>
+    <profileApplication xmi:id="_ImuYcNrXEeeQCvN4OhxQig">
+      <eAnnotations xmi:id="_Im2UQNrXEeeQCvN4OhxQig" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="http://www.eclipse.org/papyrus/compare/test/profile/MyML/ModelElements/1#/"/>
+      </eAnnotations>
+      <appliedProfile href="pathmap://MYML_PROFILE/MyML.profile.uml#ModelElements"/>
+    </profileApplication>
+    <profileApplication xmi:id="_Imw0sNrXEeeQCvN4OhxQig">
+      <eAnnotations xmi:id="_Im27UNrXEeeQCvN4OhxQig" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="http://www.eclipse.org/papyrus/compare/test/profile/MyML/Blocks/1#/"/>
+      </eAnnotations>
+      <appliedProfile href="pathmap://MYML_PROFILE/MyML.profile.uml#Blocks"/>
+    </profileApplication>
+  </uml:Model>
+  <blk:Block xmi:id="_KGMnINrXEeeQCvN4OhxQig" base_Class="_mPfJwCdYEea7OLrFgBltsw" isEncapsulated="true"/>
+  <elm:Viewpoint xmi:id="_KGOcUNrXEeeQCvN4OhxQig" base_Class="_mPfJwCdYEea7OLrFgBltsw"/>
+</xmi:XMI>

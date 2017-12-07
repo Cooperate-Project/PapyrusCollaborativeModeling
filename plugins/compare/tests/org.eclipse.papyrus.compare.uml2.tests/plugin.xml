@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<!--
+ Copyright (c) 2017 Christian W. Damus and others.
+
+ All rights reserved. This program and the accompanying materials
+ are made available under the terms of the Eclipse Public License v1.0
+ which accompanies this distribution, and is available at
+ http://www.eclipse.org/legal/epl-v10.html
+ 
+ Contributors:
+     Christian W. Damus - initial API and implementation
+-->
+<plugin>
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated MyML.profile -->
+      <package
+            uri="http://www.eclipse.org/papyrus/compare/test/profile/MyML/Blocks"
+            class="org.eclipse.papyrus.compare.uml2.tests.blocks.BlocksPackage"
+            genModel="src/org/eclipse/papyrus/compare/uml2/tests/profiles/migration/data/profile/MyML.profile.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated MyML.profile -->
+      <package
+            uri="http://www.eclipse.org/papyrus/compare/test/profile/MyML/ModelElements"
+            class="org.eclipse.papyrus.compare.uml2.tests.elements.ElementsPackage"
+            genModel="src/org/eclipse/papyrus/compare/uml2/tests/profiles/migration/data/profile/MyML.profile.genmodel"/>
+   </extension>
+   
+   <extension point="org.eclipse.uml2.uml.generated_package">
+      <profile uri="http://www.eclipse.org/papyrus/compare/test/profile/MyML/Blocks"
+            location="platform:/plugin/org.eclipse.papyrus.compare.uml2.tests/org/eclipse/papyrus/compare/uml2/tests/profiles/migration/data/profile/MyML.profile.uml#Blocks"/>
+   </extension>  
+   <extension point="org.eclipse.uml2.uml.generated_package">
+      <profile uri="http://www.eclipse.org/papyrus/compare/test/profile/MyML/ModelElements"
+            location="platform:/plugin/org.eclipse.papyrus.compare.uml2.tests/org/eclipse/papyrus/compare/uml2/tests/profiles/migration/data/profile/MyML.profile.uml#ModelElements"/>
+   </extension>  
+   
+   <extension
+         point="org.eclipse.emf.ecore.uri_mapping">
+      <mapping
+            source="pathmap://MYML_PROFILE/"
+            target="platform:/plugin/org.eclipse.papyrus.compare.uml2.tests/org/eclipse/papyrus/compare/uml2/tests/profiles/migration/data/profile/">
+      </mapping>
+   </extension>
+   <extension
+         point="org.eclipse.papyrus.infra.emf.readonly.readOnlyHandler">
+      <readOnlyHandler
+            class="org.eclipse.papyrus.compare.uml2.tests.profiles.migration.TestResourceReadOnlyHandler"
+            id="org.eclipse.papyrus.compare.uml2.tests.profiles.migration.readOnlyHandler"
+            priority="10000">
+         <affinity
+               axis="permission">
+         </affinity>
+      </readOnlyHandler>
+   </extension>
+   <extension
+         point="org.eclipse.papyrus.uml.modelrepair.profileNamespaceURIPattern">
+      <profileNamespaceURIPattern
+            uriPattern="^http://www\.eclipse\.org/papyrus/compare/test(?:/beta)?/profile/MyML/[^/]+(.*)$">
+      </profileNamespaceURIPattern>
+   </extension>
+</plugin>

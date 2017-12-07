@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 EclipseSource Services GmbH and others.
+ * Copyright (c) 2016, 2017 EclipseSource Services GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  * 
  * Contributors:
  *     Martin Fleck - initial API and implementation
+ *     Christian W. Damus - bug 528272
  *******************************************************************************/
 package org.eclipse.papyrus.compare.uml2.tests.profiles.migration;
 
@@ -45,13 +46,12 @@ import org.eclipse.emf.ecore.xml.type.AnyType;
 import org.eclipse.papyrus.compare.uml2.internal.hook.ProfileMigrationHook;
 import org.eclipse.papyrus.compare.uml2.internal.hook.migration.ProfileMigrationDiagnostic;
 import org.eclipse.papyrus.compare.uml2.internal.hook.migration.ProfileNamespaceURIPatternAPI;
-import org.eclipse.papyrus.sysml14.blocks.Block;
-import org.eclipse.papyrus.sysml14.modelelements.Viewpoint;
+import org.eclipse.papyrus.compare.uml2.tests.blocks.Block;
+import org.eclipse.papyrus.compare.uml2.tests.elements.Viewpoint;
 import org.eclipse.uml2.uml.Class;
 import org.eclipse.uml2.uml.util.UMLUtil;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
+import org.junit.ClassRule;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.google.common.base.Predicate;
@@ -64,14 +64,14 @@ import com.google.common.collect.Iterables;
  * profile applications can not be found.
  * </p>
  * <p>
- * The basic migrated, example structure is a SysML model with two stereotype applications on the same UML
+ * The basic migrated, example structure is a MyML model with two stereotype applications on the same UML
  * class element: One Block application from the package Blocks with the feature
  * {@link Block#isEncapsulated()} set to true and one Viewpoint application from the package ModelElements
  * with the feature {@link Viewpoint#getPurpose()} set to 'This is just for testing.'.
  * </p>
  * <ul>
- * <li>Block definition: http://www.eclipse.org/papyrus/0.7.0/SysML/Blocks</li>
- * <li>Viewpoint definition: http://www.eclipse.org/papyrus/0.7.0/SysML/ModelElements</li>
+ * <li>Block definition: http://www.eclipse.org/papyrus/compare/test/profile/MyML/Blocks</li>
+ * <li>Viewpoint definition: http://www.eclipse.org/papyrus/compare/test/profile/MyML/ModelElements</li>
  * </ul>
  * <p>
  * Artificial older profile versions of the model can not be found and therefore trigger the migration to an
@@ -81,8 +81,8 @@ import com.google.common.collect.Iterables;
  * therefore:
  * </p>
  * <ul>
- * <li>Block package definition: http://www.eclipse.org/papyrus/0.6.0/SysML/Blocks/1</li>
- * <li>Viewpoint package definition: http://www.eclipse.org/papyrus/0.6.0/SysML/ModelElements/1</li>
+ * <li>Block package definition: http://www.eclipse.org/papyrus/compare/test/profile/MyML/Blocks<b>/1</b></li>
+ * <li>Viewpoint package definition: http://www.eclipse.org/papyrus/compare/test/profile/MyML/ModelElements<b>/1</b></li>
  * </ul>
  * <p>
  * If the number at the end would not be given, both packages would be assumed to be the same and some
@@ -91,12 +91,17 @@ import com.google.common.collect.Iterables;
  * 
  * @author Martin Fleck <mfleck@eclipsesource.com>
  */
-@SuppressWarnings("nls")
+@SuppressWarnings({"nls", "restriction"})
 @RunWith(RuntimeTestRunner.class)
 @DiffEngines({DefaultDiffEngine.class })
-@Ignore("This test needs to be migrated to SysML 1.4 or to another profile")
 public class ProfileMigrationTest {
 
+	/** Qualified name of the {@code Block} stereotype. */
+	public static final String BLOCK = "MyML::Blocks::Block";
+	
+	/** Qualified name of the {@code Viewpoint} stereotype. */
+	public static final String VIEWPOINT = "MyML::ModelElements::Viewpoint";
+	
 	/**
 	 * Default value for the purpose feature of the Viewpoint stereotype.
 	 */
@@ -118,19 +123,9 @@ public class ProfileMigrationTest {
 	 */
 	protected static final boolean BLOCK_ISENCAPSULATED = true;
 
-	private static Object symlPattern = ProfileNamespaceURIPatternAPI
-			.createPattern("^http://www\\.eclipse\\.org/papyrus/([^/]+)/SysML/[^/]+(.*)$");
-
-	@BeforeClass
-	public static void initialize() {
-		ProfileNamespaceURIPatternAPI.registerPattern(symlPattern);
-	}
-
-	@AfterClass
-	public static void tearDown() {
-		ProfileNamespaceURIPatternAPI.unregisterPattern(symlPattern);
-	}
-
+	@ClassRule
+	public static final TestRule READ_ONLY_RULE = new TestResourceReadOnlyHandler.Rule();
+	
 	/*
 	 * ============================ Helper Methods ============================
 	 */
@@ -572,7 +567,7 @@ public class ProfileMigrationTest {
 	 * @param support
 	 *            exposed by the testing framework
 	 */
-	@Compare(left = "data/sysml/nodiff/left.uml", right = "data/sysml/nodiff/right.uml", ancestor = "data/sysml/nodiff/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
+	@Compare(left = "data/myml/nodiff/left.uml", right = "data/myml/nodiff/right.uml", ancestor = "data/myml/nodiff/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
 	public void testNoDifference(final Comparison comparison, final CompareTestSupport support) {
 		final List<Diff> differences = comparison.getDifferences();
 		final EList<Conflict> conflicts = comparison.getConflicts();
@@ -605,7 +600,7 @@ public class ProfileMigrationTest {
 	 * @param support
 	 *            exposed by the testing framework
 	 */
-	@Compare(left = "data/sysml/version/abb/left.uml", right = "data/sysml/version/abb/right.uml", ancestor = "data/sysml/version/abb/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
+	@Compare(left = "data/myml/version/abb/left.uml", right = "data/myml/version/abb/right.uml", ancestor = "data/myml/version/abb/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
 	public void testVersionChangeABB(final Comparison comparison, final CompareTestSupport support) {
 		final List<Diff> differences = comparison.getDifferences();
 		final EList<Conflict> conflicts = comparison.getConflicts();
@@ -644,7 +639,7 @@ public class ProfileMigrationTest {
 	 * @param support
 	 *            exposed by the testing framework
 	 */
-	@Compare(left = "data/sysml/version/aba/left.uml", right = "data/sysml/version/aba/right.uml", ancestor = "data/sysml/version/aba/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
+	@Compare(left = "data/myml/version/aba/left.uml", right = "data/myml/version/aba/right.uml", ancestor = "data/myml/version/aba/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
 	public void testVersionChangeABA(final Comparison comparison, final CompareTestSupport support) {
 		final List<Diff> differences = comparison.getDifferences();
 		final EList<Conflict> conflicts = comparison.getConflicts();
@@ -685,7 +680,7 @@ public class ProfileMigrationTest {
 	 * @param support
 	 *            exposed by the testing framework
 	 */
-	@Compare(left = "data/sysml/attribute/change/aba/left.uml", right = "data/sysml/attribute/change/aba/right.uml", ancestor = "data/sysml/attribute/change/aba/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
+	@Compare(left = "data/myml/attribute/change/aba/left.uml", right = "data/myml/attribute/change/aba/right.uml", ancestor = "data/myml/attribute/change/aba/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
 	public void testAttributeChangeABA(final Comparison comparison, final CompareTestSupport support) {
 		final List<Diff> differences = comparison.getDifferences();
 		final EList<Conflict> conflicts = comparison.getConflicts();
@@ -728,7 +723,7 @@ public class ProfileMigrationTest {
 	 * @param support
 	 *            exposed by the testing framework
 	 */
-	@Compare(left = "data/sysml/attribute/change/aab/left.uml", right = "data/sysml/attribute/change/aab/right.uml", ancestor = "data/sysml/attribute/change/aab/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
+	@Compare(left = "data/myml/attribute/change/aab/left.uml", right = "data/myml/attribute/change/aab/right.uml", ancestor = "data/myml/attribute/change/aab/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
 	public void testAttributeChangeAAB(final Comparison comparison, final CompareTestSupport support) {
 		final List<Diff> differences = comparison.getDifferences();
 		final EList<Conflict> conflicts = comparison.getConflicts();
@@ -770,7 +765,7 @@ public class ProfileMigrationTest {
 	 * @param support
 	 *            exposed by the testing framework
 	 */
-	@Compare(left = "data/sysml/attribute/change/abb/left.uml", right = "data/sysml/attribute/change/abb/right.uml", ancestor = "data/sysml/attribute/change/abb/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
+	@Compare(left = "data/myml/attribute/change/abb/left.uml", right = "data/myml/attribute/change/abb/right.uml", ancestor = "data/myml/attribute/change/abb/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
 	public void testAttributeChangeABB(final Comparison comparison, final CompareTestSupport support) {
 		final List<Diff> differences = comparison.getDifferences();
 		final EList<Conflict> conflicts = comparison.getConflicts();
@@ -816,7 +811,7 @@ public class ProfileMigrationTest {
 	 * @param support
 	 *            exposed by the testing framework
 	 */
-	@Compare(left = "data/sysml/attribute/change/abc/left.uml", right = "data/sysml/attribute/change/abc/right.uml", ancestor = "data/sysml/attribute/change/abc/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
+	@Compare(left = "data/myml/attribute/change/abc/left.uml", right = "data/myml/attribute/change/abc/right.uml", ancestor = "data/myml/attribute/change/abc/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
 	public void testAttributeChangeABC(final Comparison comparison, final CompareTestSupport support) {
 		final List<Diff> differences = comparison.getDifferences();
 		final EList<Conflict> conflicts = comparison.getConflicts();
@@ -865,7 +860,7 @@ public class ProfileMigrationTest {
 	 * @param support
 	 *            exposed by the testing framework
 	 */
-	@Compare(left = "data/sysml/attribute/unmigrated/aba/left.uml", right = "data/sysml/attribute/unmigrated/aba/right.uml", ancestor = "data/sysml/attribute/unmigrated/aba/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
+	@Compare(left = "data/myml/attribute/unmigrated/aba/left.uml", right = "data/myml/attribute/unmigrated/aba/right.uml", ancestor = "data/myml/attribute/unmigrated/aba/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
 	public void testUnmigratedAttributeABA(final Comparison comparison, final CompareTestSupport support) {
 		// origin and right have oldAttribute="This is not available in the new version." in Viewpoint
 		// stereotype application, but this attribute is not in new version and gets lost
@@ -908,7 +903,7 @@ public class ProfileMigrationTest {
 	 * @param support
 	 *            exposed by the testing framework
 	 */
-	@Compare(left = "data/sysml/attribute/defaultval/aba/left.uml", right = "data/sysml/attribute/defaultval/aba/right.uml", ancestor = "data/sysml/attribute/defaultval/aba/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
+	@Compare(left = "data/myml/attribute/defaultval/aba/left.uml", right = "data/myml/attribute/defaultval/aba/right.uml", ancestor = "data/myml/attribute/defaultval/aba/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
 	public void testAttributeDefaultValueABA(final Comparison comparison, final CompareTestSupport support) {
 		final List<Diff> differences = comparison.getDifferences();
 		final EList<Conflict> conflicts = comparison.getConflicts();
@@ -966,7 +961,7 @@ public class ProfileMigrationTest {
 	 * @param support
 	 *            exposed by the testing framework
 	 */
-	@Compare(left = "data/sysml/uri/wrongmigrated/abb/left.uml", right = "data/sysml/uri/wrongmigrated/abb/right.uml", ancestor = "data/sysml/uri/wrongmigrated/abb/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
+	@Compare(left = "data/myml/uri/wrongmigrated/abb/left.uml", right = "data/myml/uri/wrongmigrated/abb/right.uml", ancestor = "data/myml/uri/wrongmigrated/abb/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
 	public void testWrongMigratedPackageURIABB(final Comparison comparison,
 			final CompareTestSupport support) {
 		if (ProfileNamespaceURIPatternAPI.isAvailable()) {
@@ -1030,7 +1025,7 @@ public class ProfileMigrationTest {
 	 * @param support
 	 *            exposed by the testing framework
 	 */
-	@Compare(left = "data/sysml/uri/notmigrated/abb/left.uml", right = "data/sysml/uri/notmigrated/abb/right.uml", ancestor = "data/sysml/uri/notmigrated/abb/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
+	@Compare(left = "data/myml/uri/notmigrated/abb/left.uml", right = "data/myml/uri/notmigrated/abb/right.uml", ancestor = "data/myml/uri/notmigrated/abb/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
 	public void testNotMigratedPackageURIABB(final Comparison comparison, final CompareTestSupport support) {
 		final List<Diff> differences = comparison.getDifferences();
 		final EList<Conflict> conflicts = comparison.getConflicts();
@@ -1072,7 +1067,7 @@ public class ProfileMigrationTest {
 	 * @param support
 	 *            exposed by the testing framework
 	 */
-	@Compare(left = "data/sysml/uri/notmigrated/aab/left.uml", right = "data/sysml/uri/notmigrated/aab/right.uml", ancestor = "data/sysml/uri/notmigrated/aab/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
+	@Compare(left = "data/myml/uri/notmigrated/aab/left.uml", right = "data/myml/uri/notmigrated/aab/right.uml", ancestor = "data/myml/uri/notmigrated/aab/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
 	public void testNotMigratedPackageURIAAB(final Comparison comparison, final CompareTestSupport support) {
 		final List<Diff> differences = comparison.getDifferences();
 		final EList<Conflict> conflicts = comparison.getConflicts();
@@ -1103,8 +1098,8 @@ public class ProfileMigrationTest {
 	 * stereotype applications are grouped incorrectly and deleted by the Papyrus model repair mechanism. For
 	 * this example we use the following definitions for the origin model:
 	 * <ul>
-	 * <li>Block definition: http://www.eclipse.org/papyrus/0.6.0/SysML/Blocks</li>
-	 * <li>Viewpoint definition: http://www.eclipse.org/papyrus/0.6.0/SysML/ModelElements</li>
+	 * <li>Block definition: http://www.eclipse.org/papyrus/compare/test/beta/profile/MyML/Blocks</li>
+	 * <li>Viewpoint definition: http://www.eclipse.org/papyrus/compare/test/beta/profile/MyML/ModelElements</li>
 	 * </ul>
 	 * As a result, both definitions are assumed to be the same and the we only migrate stereotypes of the
 	 * first found package. The remaining stereotypes can not be migrated with this package (as the definition
@@ -1117,7 +1112,7 @@ public class ProfileMigrationTest {
 	 * @param support
 	 *            exposed by the testing framework
 	 */
-	@Compare(left = "data/sysml/uri/wrongformat/abb/left.uml", right = "data/sysml/uri/wrongformat/abb/right.uml", ancestor = "data/sysml/uri/wrongformat/abb/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
+	@Compare(left = "data/myml/uri/wrongformat/abb/left.uml", right = "data/myml/uri/wrongformat/abb/right.uml", ancestor = "data/myml/uri/wrongformat/abb/origin.uml", resourceSetHooks = ProfileMigrationHook.class)
 	public void testWrongFormatPackageURIsABB(final Comparison comparison, final CompareTestSupport support) {
 		if (ProfileNamespaceURIPatternAPI.isAvailable()) {
 			// With the ProfileNamespaceURIPatternAPI, we don't perform string matching and therefore do not
@@ -1188,7 +1183,7 @@ public class ProfileMigrationTest {
 	 * @param support
 	 *            exposed by the testing framework
 	 */
-	@Compare(left = "data/sysml/version/aba/left.uml", right = "data/sysml/version/aba/right.uml", ancestor = "data/sysml/version/aba/origin.uml")
+	@Compare(left = "data/myml/version/aba/left.uml", right = "data/myml/version/aba/right.uml", ancestor = "data/myml/version/aba/origin.uml")
 	public void testErrorWithoutMigration(final Comparison comparison, final CompareTestSupport support) {
 		final List<Diff> differences = comparison.getDifferences();
 		final EList<Conflict> conflicts = comparison.getConflicts();
