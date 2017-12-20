@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Compare Target Platform - Release" sequenceNumber="1512563402">
+<target name="Compare Target Platform - Release" sequenceNumber="1513797985">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.platform.feature.group" version="4.7.1.v20171009-0410"/>
-      <unit id="org.eclipse.sdk.feature.group" version="4.7.1.v20171009-0537"/>
-      <unit id="org.eclipse.rcp.feature.group" version="4.7.1.v20171009-0410"/>
-      <unit id="org.eclipse.jdt.feature.group" version="3.13.1.v20171009-0410"/>
+      <unit id="org.eclipse.platform.feature.group" version="4.7.2.v20171130-0510"/>
+      <unit id="org.eclipse.sdk.feature.group" version="4.7.2.v20171130-0906"/>
+      <unit id="org.eclipse.rcp.feature.group" version="4.7.2.v20171130-0510"/>
+      <unit id="org.eclipse.jdt.feature.group" version="3.13.2.v20171130-0906"/>
       <unit id="org.eclipse.equinox.p2.discovery.feature.feature.group" version="1.1.1.v20170906-1259"/>
-      <unit id="org.eclipse.equinox.executable.feature.group" version="3.7.1.v20170928-1359"/>
+      <unit id="org.eclipse.equinox.executable.feature.group" version="3.7.2.v20171108-1834"/>
       <unit id="org.eclipse.draw2d" version="3.10.100.201606061308"/>
       <unit id="org.eclipse.gef" version="3.11.0.201606061308"/>
       <unit id="org.eclipse.m2m.qvt.oml.sdk.feature.group" version="3.7.0.v20170604-1316"/>
@@ -24,8 +24,8 @@
       <repository id="eclipse-oxygen" location="http://download.eclipse.org/releases/oxygen/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.egit.feature.group" version="4.9.1.201712030800-r"/>
-      <unit id="org.eclipse.jgit.feature.group" version="4.9.1.201712030800-r"/>
+      <unit id="org.eclipse.egit.feature.group" version="4.9.2.201712150930-r"/>
+      <unit id="org.eclipse.jgit.feature.group" version="4.9.2.201712150930-r"/>
       <repository id="egit" location="http://download.eclipse.org/egit/updates"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
@@ -56,10 +56,10 @@
       <repository id="orbit" location="http://download.eclipse.org/tools/orbit/downloads/drops/R20170307180635/repository"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.papyrus.sdk.feature.feature.group" version="3.1.0.201709130748"/>
-      <unit id="org.eclipse.papyrus.infra.gmfdiag.feature.feature.group" version="3.0.0.201709130748"/>
-      <unit id="org.eclipse.papyrus.infra.services.feature.feature.group" version="3.0.0.201709130748"/>
-      <unit id="org.eclipse.papyrus.views.properties.toolsmiths" version="2.0.0.201709130748"/>
+      <unit id="org.eclipse.papyrus.sdk.feature.feature.group" version="3.2.0.201712060842"/>
+      <unit id="org.eclipse.papyrus.infra.gmfdiag.feature.feature.group" version="3.0.0.201712060842"/>
+      <unit id="org.eclipse.papyrus.infra.services.feature.feature.group" version="3.0.0.201712060842"/>
+      <unit id="org.eclipse.papyrus.views.properties.toolsmiths" version="2.0.2.201712060842"/>
       <repository id="papyrus" location="http://download.eclipse.org/modeling/mdt/papyrus/updates/releases/oxygen"/>
     </location>
   </locations>
