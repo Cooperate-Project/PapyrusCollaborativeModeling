@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2015 EclipseSource Munich Gmbh and Others.
+ * Copyright (C) 2015, 2018 EclipseSource Munich Gmbh and Others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,12 +8,14 @@
  * 
  * Contributors:
  *     Philip Langer - initial API and implementation
+ *     Christian W. Damus - bug 529253
  *******************************************************************************/
 package org.eclipse.papyrus.compare.diagram.tests.egit;
 
 import static com.google.common.base.Predicates.and;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.transform;
+import static org.hamcrest.Matchers.hasItem;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,6 +31,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.mapping.IModelProviderDescriptor;
 import org.eclipse.core.resources.mapping.ModelProvider;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -40,6 +43,7 @@ import org.eclipse.emf.compare.ide.ui.internal.logical.EMFModelProvider;
 import org.eclipse.emf.compare.ide.ui.internal.logical.resolver.CrossReferenceResolutionScope;
 import org.eclipse.emf.compare.ide.ui.internal.preferences.EMFCompareUIPreferences;
 import org.eclipse.emf.compare.ide.ui.tests.workspace.TestProject;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -49,6 +53,13 @@ import org.eclipse.jgit.util.FileUtils;
 import org.eclipse.jgit.util.SystemReader;
 import org.eclipse.papyrus.compare.diagram.tests.egit.fixture.GitTestRepository;
 import org.eclipse.papyrus.compare.diagram.tests.egit.fixture.MockSystemReader;
+import org.eclipse.uml2.uml.Element;
+import org.eclipse.uml2.uml.NamedElement;
+import org.eclipse.uml2.uml.Stereotype;
+import org.hamcrest.Description;
+import org.hamcrest.FeatureMatcher;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -57,6 +68,7 @@ import org.junit.Test;
 import org.osgi.framework.Bundle;
 
 import com.google.common.base.Function;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
@@ -73,7 +85,7 @@ import com.google.common.collect.ImmutableList.Builder;
  * 
  * @author Philip Langer <planger@eclipsesource.com>
  */
-@SuppressWarnings("restriction")
+@SuppressWarnings({"restriction", "nls" })
 public abstract class AbstractGitMergeTestCase {
 
 	protected static final String DEFAULT_PROJECT = "Project1";
@@ -87,6 +99,7 @@ public abstract class AbstractGitMergeTestCase {
 	protected static final String BRANCH_RIGHT = Constants.R_HEADS + "branch_right";
 
 	private static final Predicate<File> IS_EXISTING_FILE = new Predicate<File>() {
+		@Override
 		public boolean apply(File input) {
 			return input != null && input.exists() && input.isFile();
 		}
@@ -336,16 +349,16 @@ public abstract class AbstractGitMergeTestCase {
 		final File workingDirectory = repository.getRepository().getWorkTree();
 		final Iterable<File> filesOfInterest = filter(getAllContainedFiles(workingDirectory),
 				and(IS_EXISTING_FILE, getFileOfInterestFilter()));
-		final Iterable<URI> urisOfInterest = transform(filesOfInterest,
-				toUri(workingDirectory.getAbsolutePath()));
+		final Iterable<URI> urisOfInterest = transform(filesOfInterest, toUri());
 		for (URI uriOfInterest : urisOfInterest) {
 			final Resource resource = resourceSet.getResource(uriOfInterest, true);
 			validateResult(resource);
 		}
 	}
 
-	private Function<File, URI> toUri(String string) {
+	private Function<File, URI> toUri() {
 		return new Function<File, URI>() {
+			@Override
 			public URI apply(File input) {
 				return URI.createPlatformResourceURI(repository.getRepoRelativePath(input), true);
 			}
@@ -354,6 +367,7 @@ public abstract class AbstractGitMergeTestCase {
 
 	private Predicate<File> getFileOfInterestFilter() {
 		return new Predicate<File>() {
+			@Override
 			public boolean apply(File input) {
 				return !input.getAbsolutePath().startsWith(gitDir.getAbsolutePath()) && shouldValidate(input);
 			}
@@ -372,6 +386,164 @@ public abstract class AbstractGitMergeTestCase {
 		final File workTree = repository.getRepository().getWorkTree();
 		final File projectDirectory = new File(workTree, DEFAULT_PROJECT);
 		return new File(projectDirectory, string).exists();
+	}
+
+	/**
+	 * Obtain a matcher for the Git-relative paths of files that are conflicted.
+	 * 
+	 * @return a matcher of Git-relative paths of files that are conflicted
+	 */
+	protected Matcher<String> isConflicted() {
+		return new TypeSafeDiagnosingMatcher<String>() {
+			@Override
+			public void describeTo(Description description) {
+				description.appendText("is conflicted");
+			}
+
+			@Override
+			protected boolean matchesSafely(String item, Description failure) {
+				boolean result = false;
+
+				try {
+					result = repository.status().getConflicting()
+							.contains(new Path(DEFAULT_PROJECT).append(item).toString());
+
+					if (!result) {
+						failure.appendText(item).appendText(" is not conflicted");
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					failure.appendText("could not determine conflict status: " + e.getMessage());
+				}
+
+				return result;
+			}
+		};
+	}
+
+	/**
+	 * Obtain a matcher for the Git-relative paths of files that exist.
+	 * 
+	 * @return a matcher of Git-relative paths of files that exist
+	 */
+	protected Matcher<String> fileExists() {
+		return new TypeSafeDiagnosingMatcher<String>() {
+			@Override
+			public void describeTo(Description description) {
+				description.appendText("file exists");
+			}
+
+			@Override
+			protected boolean matchesSafely(String item, Description failure) {
+				boolean result = fileExists(item);
+
+				if (!result) {
+					failure.appendText(item).appendText(" does not exist");
+				}
+
+				return result;
+			}
+		};
+	}
+
+	/**
+	 * Obtain a matcher for resources that are loaded.
+	 * 
+	 * @return a matcher of resources that are loaded
+	 */
+	protected <T extends Resource> Matcher<T> isLoaded() {
+		return new TypeSafeDiagnosingMatcher<T>() {
+			@Override
+			public void describeTo(Description description) {
+				description.appendText("resource loaded");
+			}
+
+			@Override
+			protected boolean matchesSafely(T item, Description failure) {
+				boolean result = item.isLoaded();
+
+				if (!result) {
+					failure.appendText(item.getURI().lastSegment()).appendText(" is not loaded");
+				}
+
+				return result;
+			}
+		};
+	}
+
+	/**
+	 * Obtain a matcher for UML elements that have the {@code name}d stereotype applied.
+	 * 
+	 * @param name
+	 *            the simple name of a stereotype (not a qualified name)
+	 * @return the matcher
+	 */
+	protected <T extends Element> Matcher<T> stereotypedAs(String name) {
+		Matcher<Iterable<? super Stereotype>> named = hasItem(named(name));
+
+		return new FeatureMatcher<T, Iterable<Stereotype>>(named, String.format("stereotyped as «%s»", name),
+				"appliedStereotypes") {
+
+			@Override
+			protected Iterable<Stereotype> featureValueOf(T actual) {
+				return actual.getAppliedStereotypes();
+			}
+		};
+	}
+
+	/**
+	 * Obtain a matcher for UML elements that have the given {@code name}.
+	 * 
+	 * @param name
+	 *            the simple name of an element (not a qualified name)
+	 * @return the matcher
+	 */
+	protected <T extends NamedElement> Matcher<T> named(final String name) {
+		return new TypeSafeDiagnosingMatcher<T>() {
+			@Override
+			public void describeTo(Description description) {
+				description.appendText("named \"").appendText(name).appendText("\"");
+			}
+
+			@Override
+			protected boolean matchesSafely(T item, Description failure) {
+				boolean result = Objects.equal(item.getName(), name);
+
+				if (!result) {
+					failure.appendValue(item).appendText(" is not named \"").appendText(name)
+							.appendText("\"");
+				}
+
+				return result;
+			}
+		};
+	}
+
+	/**
+	 * Obtain a matcher for objects that are stored in the given {@code resource}.
+	 * 
+	 * @param resource
+	 *            the resource containing the elements to match
+	 * @return the matcher
+	 */
+	protected <T extends EObject> Matcher<T> storedIn(final Resource resource) {
+		return new TypeSafeDiagnosingMatcher<T>() {
+			@Override
+			public void describeTo(Description description) {
+				description.appendText("stored in ").appendValue(resource.getURI());
+			}
+
+			@Override
+			protected boolean matchesSafely(T item, Description failure) {
+				boolean result = item.eResource() == resource;
+
+				if (!result) {
+					failure.appendValue(item).appendText(" is not in ").appendValue(resource.getURI());
+				}
+
+				return result;
+			}
+		};
 	}
 
 	/**
