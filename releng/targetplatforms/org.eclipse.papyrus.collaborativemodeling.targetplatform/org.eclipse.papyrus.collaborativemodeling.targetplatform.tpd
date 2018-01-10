@@ -38,12 +38,6 @@ location xwt "http://download.eclipse.org/xwt/updates" {
 	org.eclipse.xwt [1.3.1,2.0.0)
 }
 
-// Temporary fix as the latest Milestone sdk does not 
-//updateFrom ("Papyrus",0)
-location papyrus "http://download.eclipse.org/modeling/mdt/papyrus/updates/milestones/3.2/I1/main/" {
-	//Temporarily moved to the nightly location below
-}
-
 // Papyrus Oxygen.2 introduces a breaking API change in nattable.common
 // Papyrus dev-tools depend on nattable.common Nightly
 // So we have to use Papyrus nightly, too
@@ -87,7 +81,7 @@ location ocl "http://download.eclipse.org/modeling/mdt/ocl/updates/releases/6.3.
 }
 
 //updateFrom ("WebTools",0)
-location webtools "http://download.eclipse.org/webtools/downloads/drops/R3.9.1/R-3.9.1-20170912000144/repository/" {
+location webtools "http://download.eclipse.org/webtools/downloads/drops/R3.9.2/R-3.9.2-20171201000141/repository/" {
  org.eclipse.wst.xml_ui.feature.feature.group lazy
  org.eclipse.wst.common.fproj.feature.group lazy
  org.eclipse.wst.server_ui.feature.feature.group lazy
