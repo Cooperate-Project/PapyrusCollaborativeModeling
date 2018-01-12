@@ -12,11 +12,8 @@
 package org.eclipse.papyrus.compare.uml2.internal.postprocessor;
 
 import static org.eclipse.emf.compare.utils.MatchUtil.getMatchedObject;
-import static org.eclipse.papyrus.compare.uml2.internal.postprocessor.PapyrusPostProcessor.IS_RESOURCE_REFACTORING_MOVE;
-import static org.eclipse.papyrus.compare.uml2.internal.postprocessor.PapyrusPostProcessor.IS_STEREOTYPE_APPLICATION_RESOURCE_MOVE;
-import static org.eclipse.papyrus.compare.uml2.internal.postprocessor.PapyrusResourceIndex.getResource;
 import static org.eclipse.papyrus.compare.uml2.internal.postprocessor.PapyrusResourceIndex.index;
-import static org.eclipse.papyrus.compare.uml2.internal.postprocessor.PapyrusResourceIndex.opposite;
+import static org.eclipse.papyrus.compare.uml2.internal.postprocessor.ResourceRefactoringChange.isResourceRefactoringChange;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -29,24 +26,22 @@ import org.eclipse.emf.compare.Diff;
 import org.eclipse.emf.compare.DifferenceSource;
 import org.eclipse.emf.compare.Match;
 import org.eclipse.emf.compare.MatchResource;
-import org.eclipse.emf.compare.ResourceAttachmentChange;
-import org.eclipse.emf.compare.merge.ResourceAttachmentChangeMerger;
+import org.eclipse.emf.compare.merge.AbstractMerger;
 import org.eclipse.emf.compare.merge.ResourceChangeAdapter;
-import org.eclipse.emf.compare.uml2.internal.postprocessor.util.UMLCompareUtil;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.papyrus.compare.uml2.internal.UMLPapyrusComparePlugin;
-import org.eclipse.uml2.uml.Element;
 
 /**
- * A specialized merger for the {@link ResourceAttachmentChange}s in resources that are refactored (renamed or
- * moved) and which, therefore, are not actually logically moving those objects.
+ * A specialized merger for the {@link ResourceRefactoringChange}s in matches of root objects of resources
+ * that are refactored (URIs changed by rename or move) and which, therefore, are not actually logically
+ * moving those root objects. These changes therefore replace {@code ResourceAttachmentChange}s computed by
+ * the diff engine.
  *
  * @author Christian W. Damus
  */
-public class ResourceRefactoringMerger extends ResourceAttachmentChangeMerger {
+public class ResourceRefactoringMerger extends AbstractMerger {
 
 	/**
 	 * Initializes me.
@@ -57,74 +52,45 @@ public class ResourceRefactoringMerger extends ResourceAttachmentChangeMerger {
 
 	@Override
 	public boolean isMergerFor(Diff target) {
-		return IS_STEREOTYPE_APPLICATION_RESOURCE_MOVE.apply(target)
-				|| IS_RESOURCE_REFACTORING_MOVE.apply(target);
+		return isResourceRefactoringChange(target);
 	}
 
 	@Override
-	protected Resource findOrCreateTargetResource(Match match, boolean rightToLeft) {
-		DifferenceSource targetSide = rightToLeft ? DifferenceSource.LEFT : DifferenceSource.RIGHT;
-		EObject movedObject = getMatchedObject(match, targetSide);
-
-		if (movedObject instanceof Element) {
-			// This is not the stereotype application case
-			return super.findOrCreateTargetResource(match, rightToLeft);
-
-		} else {
-			// We were moved to another resource. If our base element was, also, then
-			// we should be moved to its resource regardless
-
-			Element baseElement = UMLCompareUtil.getBaseElement(movedObject);
-			if (baseElement != null) {
-				return baseElement.eResource();
-			}
-		}
-
-		return super.findOrCreateTargetResource(match, rightToLeft);
+	protected void accept(Diff diff, boolean rightToLeft) {
+		refactorResource(ResourceRefactoringChange.get(diff), rightToLeft);
 	}
 
 	@Override
-	protected void move(ResourceAttachmentChange diff, boolean rightToLeft) {
-		Match match = diff.getMatch();
+	protected void reject(Diff diff, boolean rightToLeft) {
+		refactorResource(ResourceRefactoringChange.get(diff), !rightToLeft);
+	}
 
-		Resource left = match.getLeft().eResource();
-		Resource right = match.getRight().eResource();
+	protected void refactorResource(ResourceRefactoringChange diff, boolean rightToLeft) {
+		Resource newResource = diff.getNewResource();
+		Resource oldResource = diff.getOldResource();
 
-		super.move(diff, rightToLeft);
+		if (oldResource != null) {
+			Match match = diff.getMatch();
+			DifferenceSource side = rightToLeft ? DifferenceSource.LEFT : DifferenceSource.RIGHT;
+			ResourceSet rset = newResource.getResourceSet();
 
-		if (IS_RESOURCE_REFACTORING_MOVE.apply(diff)) {
-			// We've moved the UML element. Bring along all stereotype applications
-			// and other related content and delete the originating resources
 			PapyrusResourceIndex index = index(match);
+			MatchResource newMatch = index.getMatch(getMatchedObject(match, side).eResource());
 
-			if (rightToLeft) {
-				MatchResource leftMatch = index.getMatch(left);
-				Resource newLeft = demandResource(leftMatch, DifferenceSource.LEFT);
-				newLeft.getContents().addAll(left.getContents());
-				markForDeletion(left);
+			// We've implicitly moved the UML content. Bring along anything that other
+			// RACs moved into the old resource and then delete it
+			newResource.getContents().addAll(oldResource.getContents());
+			markForDeletion(oldResource);
 
-				for (Map.Entry<String, MatchResource> next : index.getGroup(leftMatch, DifferenceSource.LEFT)
-						.entrySet()) {
-					if (next.getValue() != leftMatch) {
-						left = next.getValue().getLeft();
-						newLeft = demandResource(next.getValue(), DifferenceSource.LEFT);
-						newLeft.getContents().addAll(left.getContents());
-						markForDeletion(left);
-					}
-				}
-			} else {
-				MatchResource rightMatch = index.getMatch(right);
-				Resource newRight = demandResource(rightMatch, DifferenceSource.RIGHT);
-				newRight.getContents().addAll(right.getContents());
-				markForDeletion(right);
+			// And process the other resources in the same group, to ensure their refactoring
+			for (Map.Entry<String, MatchResource> next : index.getGroup(newMatch, side).entrySet()) {
+				if (next.getValue() != newMatch) {
+					newResource = demandResource(companion(diff.getNewURI(), next.getKey()), rset, true);
+					oldResource = demandResource(companion(diff.getOldURI(), next.getKey()), rset, false);
 
-				for (Map.Entry<String, MatchResource> next : index
-						.getGroup(rightMatch, DifferenceSource.RIGHT).entrySet()) {
-					if (next.getValue() != rightMatch) {
-						right = next.getValue().getRight();
-						newRight = demandResource(next.getValue(), DifferenceSource.RIGHT);
-						newRight.getContents().addAll(right.getContents());
-						markForDeletion(right);
+					if (oldResource != null) {
+						newResource.getContents().addAll(oldResource.getContents());
+						markForDeletion(oldResource);
 					}
 				}
 			}
@@ -159,25 +125,39 @@ public class ResourceRefactoringMerger extends ResourceAttachmentChangeMerger {
 	}
 
 	/**
-	 * Obtains the new (refactored) resource on the given {@code side} of the comparison, based on the URI of
-	 * the resource opposite to it in the {@code match}. The resulting resource is created if it does not yet
-	 * exist in the resource set on this {@code side}.
+	 * Obtains the specified resource on the given {@code side} of the match.
 	 * 
-	 * @param match
-	 *            a resource match
-	 * @param side
-	 *            the side of the comparison in which to get the refactored resource
-	 * @return the refactored resource
+	 * @param uri
+	 *            the resource URI to get
+	 * @param rset
+	 *            the resource set on the merge target side in which to get the resource
+	 * @param create
+	 *            whether to create the resource if it doesn't exist (e.g., for merging into it)
+	 * @return the resource, or {@code null} if it doesn't exist and is not {@code create}d
 	 */
-	protected Resource demandResource(MatchResource match, DifferenceSource side) {
-		ResourceSet rset = getResource(match, side).getResourceSet();
-		URI uri = getResource(match, opposite(side)).getURI();
-
+	protected Resource demandResource(URI uri, ResourceSet rset, boolean create) {
 		Resource result = rset.getResource(uri, false);
 		if (result == null) {
-			result = rset.createResource(uri);
+			if (rset.getURIConverter().exists(uri, null)) {
+				result = rset.getResource(uri, true);
+			} else if (create) {
+				result = rset.createResource(uri);
+			}
 		}
 
 		return result;
+	}
+
+	/**
+	 * Compute the companion resource URI of a URI that has the given file extension.
+	 * 
+	 * @param uri
+	 *            the base URI
+	 * @param fileExtension
+	 *            the file extension of the companion
+	 * @return the companion URI
+	 */
+	static URI companion(URI uri, String fileExtension) {
+		return uri.trimFileExtension().appendFileExtension(fileExtension);
 	}
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2016 Obeo and others.
+ * Copyright (c) 2014, 2018 Obeo and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,11 +8,14 @@
  * Contributors:
  *     Obeo - initial API and implementation
  *     Alexandra Buzila - bug 483798
+ *     Christian W. Damus - bug 529253
  *******************************************************************************/
 package org.eclipse.papyrus.compare.uml2.edit;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.emf.common.EMFPlugin;
+import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.papyrus.infra.core.services.ServiceException;
 import org.eclipse.papyrus.infra.services.labelprovider.service.LabelProviderService;
 import org.eclipse.papyrus.infra.services.labelprovider.service.impl.LabelProviderServiceImpl;
@@ -35,26 +38,20 @@ public class Activator extends AbstractUIPlugin {
 	/** The label provider service. */
 	private LabelProviderService labelProviderService;
 
+	private ResourceLocator resourceLocator;
+
 	/**
 	 * The constructor.
 	 */
 	public Activator() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
-	 */
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
@@ -98,4 +95,17 @@ public class Activator extends AbstractUIPlugin {
 		return labelProviderService;
 	}
 
+	/**
+	 * Obtain a resource locator for this plug-in.
+	 * 
+	 * @return my resource locator
+	 */
+	public ResourceLocator getResourceLocator() {
+		if (resourceLocator == null) {
+			resourceLocator = new EMFPlugin.EclipsePlugin() {
+				// Pass
+			};
+		}
+		return resourceLocator;
+	}
 }

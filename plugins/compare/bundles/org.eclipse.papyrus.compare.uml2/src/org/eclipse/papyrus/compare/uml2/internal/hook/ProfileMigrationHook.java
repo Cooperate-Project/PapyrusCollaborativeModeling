@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2017 EclipseSource Services GmbH and others.
+ * Copyright (c) 2016, 2018 EclipseSource Services GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,24 +8,34 @@
  * Contributors:
  *     Martin Fleck - initial API and implementation
  *     Philip Langer - bug 516484
+ *     Christian W. Damus - bug 529217
  *******************************************************************************/
 package org.eclipse.papyrus.compare.uml2.internal.hook;
+
+import static org.eclipse.papyrus.infra.emf.internal.resource.AbstractCrossReferenceIndex.SHARD_ANNOTATION_SOURCE;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.compare.ide.hook.AbstractResourceSetHooks;
+import org.eclipse.emf.ecore.EAnnotation;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.emf.ecore.util.InternalEList;
 import org.eclipse.papyrus.compare.uml2.internal.hook.migration.StereotypeApplicationRepair;
 import org.eclipse.papyrus.uml.modelrepair.internal.stereotypes.IRepairAction;
 import org.eclipse.papyrus.uml.modelrepair.internal.stereotypes.ZombieStereotypesDescriptor;
 import org.eclipse.papyrus.uml.tools.model.UmlModel;
+import org.eclipse.uml2.uml.PackageableElement;
+import org.eclipse.uml2.uml.UMLPackage;
 
 /**
  * This class migrates missing UML stereotype applications before the comparison, if possible. For any missing
@@ -46,6 +56,17 @@ public class ProfileMigrationHook extends AbstractResourceSetHooks {
 			return; // we are not responsible
 		}
 
+		// Two stages: ensure sub-unit linkages and then repair
+
+		// First, ensure that the linkages between sub-units are correctly
+		// established (container proxies) so that packages can find profile
+		// applications in parent units and we don't create redundant new
+		// profile applications in the next step that will introduce bogus diffs
+		for (final Resource umlResource : umlResources) {
+			ensureParentUnitLinkage(umlResource);
+		}
+
+		// Then, do whatever it takes to repair profile applications
 		for (final Resource umlResource : umlResources) {
 			repairProfileApplications(umlResource);
 		}
@@ -137,6 +158,43 @@ public class ProfileMigrationHook extends AbstractResourceSetHooks {
 			}
 		} finally {
 			repair.dispose();
+		}
+	}
+
+	/**
+	 * Ensure that a sub-model unit correctly resolves its {@code eContainer} link to its parent unit so that
+	 * profile applications may be found in that parent unit.
+	 * 
+	 * @param resource
+	 *            a UML resource that may or may not be a sub-model unit
+	 */
+	protected void ensureParentUnitLinkage(Resource resource) {
+		org.eclipse.uml2.uml.Package subUnit = (org.eclipse.uml2.uml.Package)EcoreUtil
+				.getObjectByType(resource.getContents(), UMLPackage.Literals.PACKAGE);
+		if (subUnit != null) {
+			// Search for the shard annotation and resolve the parent package's
+			// proxy for this nested package
+			EAnnotation annotation = subUnit.getEAnnotation(SHARD_ANNOTATION_SOURCE);
+			if (annotation != null) {
+				org.eclipse.uml2.uml.Package parentUnit = (org.eclipse.uml2.uml.Package)EcoreUtil
+						.getObjectByType(annotation.getReferences(), UMLPackage.Literals.PACKAGE);
+				if (parentUnit != null) {
+					final URI proxyURI = EcoreUtil.getURI(subUnit);
+
+					// Trigger containment proxy resolution
+					for (ListIterator<PackageableElement> iter = ((InternalEList<PackageableElement>)parentUnit
+							.getPackagedElements()).basicListIterator(); iter.hasNext();) {
+
+						PackageableElement next = iter.next();
+						if (proxyURI.equals(((InternalEObject)next).eProxyURI())) {
+							parentUnit.getPackagedElements().get(iter.previousIndex());
+
+							// Needn't continue further
+							break;
+						}
+					}
+				}
+			}
 		}
 	}
 }

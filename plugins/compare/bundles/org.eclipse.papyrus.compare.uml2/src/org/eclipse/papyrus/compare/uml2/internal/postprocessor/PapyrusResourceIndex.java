@@ -11,7 +11,10 @@
  *******************************************************************************/
 package org.eclipse.papyrus.compare.uml2.internal.postprocessor;
 
-import com.google.common.base.Objects;
+import static org.eclipse.emf.compare.utils.MatchUtil.getMatchedObject;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Maps;
 
 import java.util.Map;
@@ -22,9 +25,12 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.compare.CompareFactory;
 import org.eclipse.emf.compare.ComparePackage;
 import org.eclipse.emf.compare.Comparison;
+import org.eclipse.emf.compare.Diff;
+import org.eclipse.emf.compare.DifferenceKind;
 import org.eclipse.emf.compare.DifferenceSource;
 import org.eclipse.emf.compare.Match;
 import org.eclipse.emf.compare.MatchResource;
+import org.eclipse.emf.compare.ResourceAttachmentChange;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -47,6 +53,9 @@ public final class PapyrusResourceIndex {
 	/** Token stored in the match cache for cache misses. */
 	private final MatchResource noMatch = CompareFactory.eINSTANCE.createMatchResource();
 
+	/** Mapping of refactorings. */
+	private final BiMap<MatchResource, MatchResource> refactorings;
+
 	/** The comparison that I index. */
 	private final Comparison comparison;
 
@@ -60,6 +69,7 @@ public final class PapyrusResourceIndex {
 		super();
 
 		this.comparison = comparison;
+		this.refactorings = HashBiMap.create(comparison.getMatchedResources().size());
 
 		for (MatchResource next : comparison.getMatchedResources()) {
 			if (next.getLeftURI() != null) {
@@ -139,41 +149,88 @@ public final class PapyrusResourceIndex {
 	}
 
 	/**
-	 * Obtains the match that represents the refactoring of a {@code resource} of which the given matched
-	 * object is a root. This resource match will match resources on either side that have different URIs,
-	 * which is the refactoring.
+	 * Register a resource refactoring inferred from the given root object match.
 	 * 
-	 * @param objectMatch
-	 *            a match of an object that is a UML resource root element, either the root of the entire
-	 *            model or of some sub-unit
-	 * @return the refactoring resource match that was inferred from the different resources in the given
-	 *         object match, or {@code null} if there is no refactoring of the resources containing the object
+	 * @param rootMatch
+	 *            a matched resource root apparently "moved" from one resource to another
 	 */
-	public MatchResource getResourceRefactoring(Match objectMatch) {
-		EObject left = objectMatch.getLeft();
-		EObject right = objectMatch.getRight();
+	public void addResourceRefactoring(Match rootMatch) {
+		EObject leftRoot = rootMatch.getLeft();
+		EObject rightRoot = rootMatch.getRight();
+		Resource leftRes = leftRoot.eResource();
+		Resource rightRes = rightRoot.eResource();
+		MatchResource leftMatch = getMatch(leftRes);
+		MatchResource rightMatch = getMatch(rightRes);
+		refactorings.put(leftMatch, rightMatch);
 
-		if (left == null || right == null) {
-			// There is no resource match if the object doesn't exist on both sides
-			return null;
+		// And do all of the group
+		for (Map.Entry<String, MatchResource> next : getGroup(leftMatch, DifferenceSource.LEFT).entrySet()) {
+			MatchResource nextLeft = next.getValue();
+			if (nextLeft != leftMatch) {
+				MatchResource nextRight = getGroup(rightMatch, DifferenceSource.RIGHT).get(next.getKey());
+				if (nextRight != null) {
+					refactorings.put(nextLeft, nextRight);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Queries whether the comparison involves any resource refactoring.
+	 * 
+	 * @return whether any resource is refactored in my comparison
+	 */
+	public boolean hasResourceRefactorings() {
+		return !refactorings.isEmpty();
+	}
+
+	/**
+	 * Obtains the other resource match, if any, in a refactoring pair.
+	 * 
+	 * @param match
+	 *            a resource match
+	 * @return the other participant in the refactoring, or {@code null} if the {@code match} is not involved
+	 *         in a refactoring
+	 */
+	public MatchResource getResourceRefactoring(MatchResource match) {
+		MatchResource result = refactorings.get(match);
+		if (result == null) {
+			result = refactorings.inverse().get(match);
+		}
+		return result;
+	}
+
+	/**
+	 * Queries whether a resource attachment change is a {@linkplain DifferenceKind#MOVE move} RAC that is
+	 * only really a pseudo-RAC because, in fact, the source and destination resources are the same resource
+	 * just refactored.
+	 * 
+	 * @param diff
+	 *            a resource attachment change
+	 * @return the other participant in the refactoring, or {@code null} if the {@code match} is not involved
+	 *         in a refactoring
+	 */
+	public boolean isInResourceRefactoring(ResourceAttachmentChange diff) {
+		if (diff.getKind() != DifferenceKind.MOVE) {
+			// Something that's not a move doesn't indicate refactoring of the resource
+			return false;
 		}
 
-		MatchResource leftRes = getMatch(left.eResource());
-		MatchResource rightRes = getMatch(right.eResource());
-
-		if (leftRes == null || rightRes == null) {
-			// We could not have detected a resource match without both sides
-			return null;
+		Match match = diff.getMatch();
+		EObject moved = getMatchedObject(match, diff.getSource());
+		Resource resource = moved.eResource();
+		MatchResource resourceMatch = getMatch(resource);
+		MatchResource otherMatch = getResourceRefactoring(resourceMatch);
+		if (otherMatch == null) {
+			return false;
 		}
 
-		if (Objects.equal(leftRes.getLeftURI(), rightRes.getRightURI())) {
-			// Not refactored
-			return null;
-		}
+		Resource otherSide = getResource(otherMatch, opposite(diff.getSource()));
 
-		// It's not a rename/move/etc. resource refactoring if the resources
-		// on the left and right were not matched together
-		return leftRes == rightRes ? leftRes : null;
+		// If it is not being moved from the old resource of the refactoring,
+		// then it's a real move
+		return otherSide != null && (match.getOrigin() == null
+				|| match.getOrigin().eResource().getURI().equals(otherSide.getURI()));
 	}
 
 	/**
@@ -201,6 +258,18 @@ public final class PapyrusResourceIndex {
 	 */
 	public static PapyrusResourceIndex index(Match match) {
 		return index(match.getComparison());
+	}
+
+	/**
+	 * Obtains the unique (lazily computed) index of Papyrus resources in the context of the comparison
+	 * containing a {@code diff}.
+	 * 
+	 * @param diff
+	 *            a difference in some comparison
+	 * @return its resource index
+	 */
+	public static PapyrusResourceIndex index(Diff diff) {
+		return index(diff.getMatch());
 	}
 
 	/**

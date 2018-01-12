@@ -12,24 +12,40 @@
 package org.eclipse.papyrus.compare.uml2.internal.postprocessor;
 
 import static com.google.common.base.Predicates.and;
+import static com.google.common.base.Predicates.not;
+import static com.google.common.collect.Iterables.any;
 import static com.google.common.collect.Iterables.filter;
+import static com.google.common.collect.Iterables.getFirst;
+import static com.google.common.collect.Iterables.transform;
 import static org.eclipse.emf.compare.utils.EMFComparePredicates.ofKind;
+import static org.eclipse.emf.compare.utils.MatchUtil.getMatchedObject;
 import static org.eclipse.papyrus.compare.uml2.internal.postprocessor.PapyrusResourceIndex.getResource;
+import static org.eclipse.papyrus.compare.uml2.internal.postprocessor.PapyrusResourceIndex.getURI;
 import static org.eclipse.papyrus.compare.uml2.internal.postprocessor.PapyrusResourceIndex.index;
 import static org.eclipse.papyrus.compare.uml2.internal.postprocessor.PapyrusResourceIndex.opposite;
-import static org.eclipse.papyrus.compare.uml2.internal.postprocessor.PapyrusResourceIndex.setResource;
-import static org.eclipse.papyrus.compare.uml2.internal.postprocessor.PapyrusResourceIndex.setURI;
+import static org.eclipse.papyrus.compare.uml2.internal.postprocessor.ResourceRefactoringChange.isResourceRefactoringChange;
+import static org.eclipse.papyrus.compare.uml2.internal.postprocessor.ResourceRefactoringChange.onSide;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
+import java.util.Set;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.Monitor;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.compare.CompareFactory;
 import org.eclipse.emf.compare.Comparison;
+import org.eclipse.emf.compare.Conflict;
 import org.eclipse.emf.compare.Diff;
 import org.eclipse.emf.compare.DifferenceKind;
 import org.eclipse.emf.compare.DifferenceSource;
@@ -39,14 +55,24 @@ import org.eclipse.emf.compare.ReferenceChange;
 import org.eclipse.emf.compare.ResourceAttachmentChange;
 import org.eclipse.emf.compare.postprocessor.IPostProcessor;
 import org.eclipse.emf.compare.uml2.internal.postprocessor.util.UMLCompareUtil;
+import org.eclipse.emf.compare.util.CompareSwitch;
 import org.eclipse.emf.compare.utils.MatchUtil;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.util.ECrossReferenceAdapter;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.uml2.uml.Element;
+import org.eclipse.uml2.uml.UMLPackage;
 
 /**
- * Post-processor for comparisons of Papyrus models.
+ * Post-processor for comparisons of Papyrus models. Specialized diffs that it looks for include:
+ * <ul>
+ * <li>{@link ResourceRefactoringChange}s in matches of root objects of resources that are refactored (URIs
+ * changed by rename or move) and which, therefore, are not actually logically moving those root objects.
+ * These changes therefore replace {@link ResourceAttachmentChange}s computed by the diff engine</li>
+ * </ul>
  *
  * @author Christian W. Damus
  */
@@ -60,13 +86,6 @@ public class PapyrusPostProcessor implements IPostProcessor {
 			ofKind(DifferenceKind.MOVE));
 
 	/**
-	 * A predicate matching diffs that are {@link ResourceAttachmentChange}s that move the principal UML
-	 * element of a resource.
-	 */
-	static final Predicate<Diff> IS_RESOURCE_REFACTORING_MOVE = and(isResourceRefactoringRAC(),
-			ofKind(DifferenceKind.MOVE));
-
-	/**
 	 * Initializes me.
 	 */
 	public PapyrusPostProcessor() {
@@ -74,8 +93,7 @@ public class PapyrusPostProcessor implements IPostProcessor {
 	}
 
 	public void postMatch(Comparison comparison, Monitor monitor) {
-		// Handle refactoring of model resources, esp. sub-units
-		rematchRefactoredUMLResources(comparison, monitor);
+		// Pass
 	}
 
 	public void postDiff(Comparison comparison, Monitor monitor) {
@@ -93,7 +111,9 @@ public class PapyrusPostProcessor implements IPostProcessor {
 	}
 
 	public void postConflicts(Comparison comparison, Monitor monitor) {
-		// Pass
+		// Handle refactoring of model resources, esp. sub-units
+		rematchRefactoredUMLResources(comparison, monitor);
+		pruneRACsInRefactoredResources(comparison, monitor);
 	}
 
 	public void postComparison(Comparison comparison, Monitor monitor) {
@@ -165,30 +185,6 @@ public class PapyrusPostProcessor implements IPostProcessor {
 	}
 
 	/**
-	 * Obtains a predicate matching {@link ResourceAttachmentChange}s of UML elements that signify the
-	 * refactoring (rename/move) of a resource.
-	 * 
-	 * @return the is-resource-refactoring-RAC predicate
-	 */
-	protected static Predicate<Diff> isResourceRefactoringRAC() {
-		return new Predicate<Diff>() {
-			public boolean apply(Diff input) {
-				if (!(input instanceof ResourceAttachmentChange)) {
-					return false;
-				}
-
-				Match match = input.getMatch();
-				EObject object = match.getLeft();
-				if (object == null) {
-					object = match.getRight();
-				}
-
-				return object instanceof Element && index(match).getResourceRefactoring(match) != null;
-			}
-		};
-	}
-
-	/**
 	 * Find the nearest diff to a given {@code match} that moves it (perhaps indirectly via the content tree)
 	 * from a resource to another resource.
 	 * 
@@ -246,44 +242,50 @@ public class PapyrusPostProcessor implements IPostProcessor {
 	 */
 	protected void rematchRefactoredUMLResources(Comparison comparison, Monitor monitor) {
 		// Look for renamed resources, which are matched by their root UML elements
-		Map<Resource, MatchResource> updates = Maps.newHashMap();
-		PapyrusResourceIndex resourceGroups = index(comparison);
+		Set<Resource> processed = Sets.newHashSet();
+		Multimap<Match, ResourceRefactoringChange> diffs = ArrayListMultimap.create();
+		PapyrusResourceIndex index = index(comparison);
 
 		for (MatchResource mres : comparison.getMatchedResources()) {
-			if (!rematch(comparison, mres, DifferenceSource.LEFT, resourceGroups, updates)) {
-				// Try the other way around
-				rematch(comparison, mres, DifferenceSource.RIGHT, resourceGroups, updates);
+			Match rootMatch = null;
+			for (DifferenceSource side : DifferenceSource.VALUES) {
+				rootMatch = rematch(comparison, mres, side, index, processed);
+				if (rootMatch != null //
+						&& (!diffs.containsKey(rootMatch) || !any(diffs.get(rootMatch), onSide(side)))) {
+
+					ResourceRefactoringChange uriDiff = null;
+
+					if (rootMatch.getOrigin() != null) {
+						uriDiff = ResourceRefactoringChange.demand(rootMatch, side);
+						diffs.put(rootMatch, uriDiff);
+						uriDiff.setNewURI(getMatchedObject(rootMatch, side).eResource().getURI());
+						// We know that the origin also has a direct resource because we filter
+						// out control-control conflicts
+						uriDiff.setOldURI(rootMatch.getOrigin().eResource().getURI());
+					} else if (side == DifferenceSource.RIGHT) {
+						// In two-way comparison, only consider incoming (right) as
+						// imposing the change
+						uriDiff = ResourceRefactoringChange.demand(rootMatch, side);
+						diffs.put(rootMatch, uriDiff);
+						DifferenceSource opposite = opposite(side);
+						uriDiff.setNewURI(getMatchedObject(rootMatch, opposite).eResource().getURI());
+						uriDiff.setOldURI(getResource(mres, side).getURI());
+					}
+
+					if (uriDiff != null) {
+						index.addResourceRefactoring(rootMatch);
+						findDependencies(comparison, uriDiff);
+					}
+				}
 			}
 		}
 
-		if (!updates.isEmpty()) {
-			// Remove incomplete matches
-			for (Iterator<MatchResource> iter = Lists.reverse(comparison.getMatchedResources())
-					.iterator(); iter.hasNext() && !updates.isEmpty();) {
+		// Look for conflicts in resources refactored on both sides
+		for (Match objectMatch : diffs.keySet()) {
+			Collection<ResourceRefactoringChange> uriDiffs = diffs.get(objectMatch);
 
-				MatchResource next = iter.next();
-
-				MatchResource update = updates.remove(next.getLeft());
-				if (update == null || update == next) {
-					update = updates.remove(next.getRight());
-					if (update == next) {
-						update = null;
-					}
-				}
-
-				if (update != null) {
-					// MatchResource::locationChanges is no longer used,
-					// so don't worry about updating that
-
-					// Capture the origin from the match we're deleting
-					if (update.getOrigin() == null) {
-						update.setOrigin(next.getOrigin());
-						update.setOriginURI(next.getOriginURI());
-					}
-
-					// Remove the redundant match
-					iter.remove();
-				}
+			if (uriDiffs.size() > 1) {
+				conflict(comparison, uriDiffs);
 			}
 		}
 	}
@@ -301,91 +303,201 @@ public class PapyrusPostProcessor implements IPostProcessor {
 	 *            the side from which to try to find a new match on the other side
 	 * @param index
 	 *            an index of relationships between resources in the context of the the {@code comparison}
-	 * @param updates
-	 *            collects the incomplete matches of resources that were merged into incomplete matches on the
-	 *            other side, which need to be removed from the {@code comparison} in a subsequent step
-	 *            (because it isn't safe to do so in-line)
-	 * @return {@code true} if a new match was found for the resource from this {@code side}; {@code false},
-	 *         otherwise
+	 * @param processed
+	 *            collects the resources that we've searched for
+	 * @return the match for a {@link ResourceAttachmentChange} that indicates the resource refactoring, or
+	 *         {@code null} if none
 	 */
-	protected boolean rematch(Comparison comparison, MatchResource mres, DifferenceSource side,
-			PapyrusResourceIndex index, Map<Resource, MatchResource> updates) {
+	protected Match rematch(Comparison comparison, MatchResource mres, DifferenceSource side,
+			PapyrusResourceIndex index, Set<Resource> processed) {
+
+		Match result = null;
 
 		final DifferenceSource opposite = opposite(side);
 		final Resource oneSide = getResource(mres, side);
 		final Resource otherSide = getResource(mres, opposite);
 
-		if (oneSide != null && otherSide == null) {
-			// Don't process a resource match that we've already melded into another
-			if (!updates.containsKey(oneSide) && !oneSide.getContents().isEmpty()) {
-				EObject root = oneSide.getContents().get(0);
-				if (!(root instanceof Element)) {
+		// Did this side actually change the resource URI?
+		out: if (oneSide != null && otherSide == null
+				&& (mres.getOriginURI() == null || !mres.getOriginURI().equals(getURI(mres, side)))) {
+
+			// Don't process a resource match that we've already seen
+			if (processed.add(oneSide) && !oneSide.getContents().isEmpty()) {
+				EObject root = (Element)EcoreUtil.getObjectByType(oneSide.getContents(),
+						UMLPackage.Literals.ELEMENT);
+
+				if (root == null) {
 					// Only need this for UML resources that reliably contain
 					// only one real element, to handle stereotype applications
 					// that are additional non-UML roots
-					return false;
+					break out;
 				}
 
 				Match rootMatch = comparison.getMatch(root);
 				if (rootMatch != null) {
 					EObject otherRoot = MatchUtil.getMatchedObject(rootMatch, opposite);
-					if (otherRoot == null) {
-						return false;
-					}
+					if (otherRoot != null) {
+						Resource other = ((InternalEObject)otherRoot).eDirectResource();
 
-					Resource other = ((InternalEObject)otherRoot).eDirectResource();
-					if (other != null) {
-						combine(mres, other, opposite, index, updates);
-						return true;
+						// If this is three-way and the origin exists and is uncontrolled,
+						// then this is a control-control conflict, not a refactoring of
+						// a controlled unit
+						if (other != null && !isControlControlConflict(rootMatch)) {
+							result = rootMatch;
+						}
 					}
 				}
 			}
 		}
 
-		return false;
+		return result;
+	}
+
+	private boolean isControlControlConflict(Match rootMatch) {
+		EObject origin = rootMatch.getOrigin();
+		return origin instanceof InternalEObject && ((InternalEObject)origin).eDirectResource() == null;
 	}
 
 	/**
-	 * Combine a resource match with an{@code other} resource.
+	 * Find the dependencies of a resource refactoring change and add them to its {@link Diff#getRequiredBy()
+	 * requiredBy} list.
 	 * 
-	 * @param uml
-	 *            an unmatched UML resource to complete with the {@code other}
-	 * @param other
-	 *            a resource with which to complete the match
-	 * @param otherSide
-	 *            the side on which the {@code other} resource is
-	 * @param index
-	 *            an index of relationships between resources in the context of the the {@code comparison}
-	 * @param updates
-	 *            collects the incomplete matches of resources that were merged into incomplete matches on the
-	 *            other side, which need to be removed from the {@code comparison} in a subsequent step
-	 *            (because it isn't safe to do so in-line)
+	 * @param comparison
+	 *            the contextual comparison
+	 * @param rrc
+	 *            a resource refactoring change
 	 */
-	protected void combine(MatchResource uml, Resource other, DifferenceSource otherSide,
-			PapyrusResourceIndex index, Map<Resource, MatchResource> updates) {
+	protected void findDependencies(final Comparison comparison, final ResourceRefactoringChange rrc) {
+		// This change is required by any change that moves objects into or out
+		// of the new resource (on the the same side) or into or out of the old
+		// resource (on the opposide side)
+		class DependencySwitch extends CompareSwitch<URI> {
+			@Override
+			public URI caseResourceAttachmentChange(ResourceAttachmentChange object) {
+				return URI.createURI(object.getResourceURI());
+			}
 
-		// Meld the matches for the UML resource
-		setResource(uml, otherSide, other);
-		setURI(uml, otherSide, other.getURI().toString());
-		updates.put(other, uml);
+			@Override
+			public URI caseReferenceChange(ReferenceChange object) {
+				if (object.getReference().isContainment()) {
+					return object.getValue().eResource().getURI();
+				}
+				return null;
+			}
+		}
 
-		// And do the same for other Papyrus resources in the same group
-		DifferenceSource thisSide = opposite(otherSide);
-		Map<String, MatchResource> thisGroup = index.getGroup(uml, thisSide);
-		Map<String, MatchResource> otherGroup = index.getGroup(uml, otherSide);
+		DependencySwitch dep = new DependencySwitch();
 
-		for (Map.Entry<String, MatchResource> next : thisGroup.entrySet()) {
-			MatchResource combine = next.getValue();
-
-			if (combine != uml && getResource(combine, otherSide) == null) {
-				MatchResource combineWith = otherGroup.get(next.getKey());
-				if (combineWith != null && getResource(combineWith, thisSide) == null) {
-					Resource combineWithResource = getResource(combineWith, otherSide);
-					setResource(combine, otherSide, combineWithResource);
-					setURI(combine, otherSide, combineWithResource.getURI().toString());
-					updates.put(combineWithResource, combine);
+		for (Diff next : comparison.getDifferences()) {
+			URI nextURI = dep.doSwitch(next);
+			if (nextURI != null) {
+				if (next.getSource() == rrc.getSource()) {
+					if (rrc.getNewURI().equals(nextURI)) {
+						rrc.getRequiredBy().add(next);
+					}
+				} else if (rrc.getOldURI().equals(nextURI)) {
+					rrc.getRequiredBy().add(next);
 				}
 			}
+		}
+
+	}
+
+	/**
+	 * Create a new conflict on a bunch of {@code diffs}.
+	 * 
+	 * @param comparison
+	 *            the comparison in which to create the conflict
+	 * @param diffs
+	 *            the conflicting diffs
+	 * @return the conflict
+	 * @throws IllegalArgumentException
+	 *             if there aren't at least two {@code diffs}
+	 */
+	protected Conflict conflict(Comparison comparison, Iterable<ResourceRefactoringChange> diffs) {
+		if (Iterables.size(diffs) < 2) {
+			throw new IllegalArgumentException("diffs.size() < 2"); //$NON-NLS-1$
+		}
+
+		Conflict result = CompareFactory.eINSTANCE.createConflict();
+		EList<Diff> conflict = result.getDifferences();
+		for (ResourceRefactoringChange next : diffs) {
+			conflict.add(next.toDiff());
+		}
+		comparison.getConflicts().add(result);
+		return result;
+	}
+
+	/**
+	 * Prune out {@link ResourceAttachmentChange}s that aren't really RACs at all because they actually are
+	 * staying within a refactored (moved/renamed) resource.
+	 * 
+	 * @param comparison
+	 *            the contextual comparison
+	 * @param monitor
+	 *            a progress monitor
+	 */
+	protected void pruneRACsInRefactoredResources(Comparison comparison, Monitor monitor) {
+		PapyrusResourceIndex index = PapyrusResourceIndex.index(comparison);
+
+		Iterable<ResourceAttachmentChange> racs = filter(
+				filter(comparison.getDifferences(), ResourceAttachmentChange.class),
+				not(isResourceRefactoringChange())); // Don't prune out the RRCs, themselves!
+		List<ResourceAttachmentChange> toPrune = Lists.newArrayList();
+
+		for (ResourceAttachmentChange next : racs) {
+			if (index.isInResourceRefactoring(next) && !isResourceRefactoringChange(next)) {
+				toPrune.add(next);
+			}
+		}
+
+		for (ResourceAttachmentChange next : toPrune) {
+			// Infer conflicts for the ResourceRefactoringChange
+			Conflict conflict = next.getConflict();
+			if (conflict != null) {
+				ResourceRefactoringChange rrc = getFirst(
+						transform(filter(next.getMatch().getDifferences(), isResourceRefactoringChange()),
+								ResourceRefactoringChange.get()),
+						null);
+				if (rrc != null) {
+					Collections.replaceAll(conflict.getDifferences(), next, rrc.toDiff());
+				}
+			}
+
+			delete(next);
+		}
+	}
+
+	/**
+	 * Delete an {@code object} from the comparison, taking advantage of the cross-referencers employed by the
+	 * comparison for efficient removal of incoming references to the {@code object}.
+	 * 
+	 * @param object
+	 *            the object to delete from the comparison
+	 */
+	static void delete(EObject object) {
+		if (object instanceof Diff) {
+			// First, delete any conflict and equivalence that depend on the diff
+			Diff diff = (Diff)object;
+			if (diff.getConflict() != null) {
+				delete(diff.getConflict());
+			}
+			if (diff.getEquivalence() != null) {
+				delete(diff.getEquivalence());
+			}
+		}
+
+		// We always have the DiffCrossReferencer and/or the MatchCrossReferencer
+		ECrossReferenceAdapter xrefs = ECrossReferenceAdapter.getCrossReferenceAdapter(object);
+		if (xrefs != null) {
+			// Do it the efficient way
+			for (EStructuralFeature.Setting setting : xrefs.getInverseReferences(object)) {
+				EcoreUtil.remove(setting, object);
+			}
+			EcoreUtil.remove(object);
+		} else {
+			// The expensive way
+			EcoreUtil.delete(object);
 		}
 	}
 }
