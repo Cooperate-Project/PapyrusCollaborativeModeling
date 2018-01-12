@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<!--
+  FIXME: Delete this file when the compare.uml2.ide bundle is available in a feature
+  so that we can add a dependency on it to get its definition of this inclusion tester.
+  cf. http://eclip.se/529844
+-->
+<fragment>
+   <extension
+         point="org.eclipse.emf.compare.ide.modelInclusionTester">
+      <fileExtensionModelInclusionTester
+            fileExtension="uml">
+      </fileExtensionModelInclusionTester>
+   </extension>
+</fragment>
