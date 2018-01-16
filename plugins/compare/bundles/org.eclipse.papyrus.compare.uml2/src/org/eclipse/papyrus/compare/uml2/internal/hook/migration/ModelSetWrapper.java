@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2017 EclipseSource Services GmbH and others.
+ * Copyright (c) 2016, 2018 EclipseSource Services GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,12 +7,15 @@
  * 
  * Contributors:
  *     Martin Fleck - initial API and implementation
- *     Christian W. Damus - bug 526932
- *     Christian W. Damus - bug 512529
+ *     Christian W. Damus - bugs 526932, 512529, 529897
  *******************************************************************************/
 package org.eclipse.papyrus.compare.uml2.internal.hook.migration;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.MapMaker;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -20,11 +23,16 @@ import java.lang.reflect.Proxy;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationWrapper;
 import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.emf.common.notify.impl.AdapterImpl;
+import org.eclipse.emf.common.util.DelegatingEList;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.emf.ecore.resource.ContentHandler;
@@ -424,6 +432,8 @@ public class ModelSetWrapper extends ModelSet {
 	private class ResourceProxy implements InvocationHandler {
 		private final Resource resource;
 
+		private EList<Adapter> adapterList;
+
 		ResourceProxy(Resource resource) {
 			super();
 
@@ -444,10 +454,230 @@ public class ModelSetWrapper extends ModelSet {
 						return null;
 					}
 					break;
+				case "eAdapters": //$NON-NLS-1$
+					return getAdapters(proxy);
 			}
 
 			return method.invoke(resource, args);
 		}
 
+		EList<Adapter> getAdapters(Object proxy) {
+			if (adapterList == null) {
+				adapterList = new ProxyAdapterList(resource, (Resource)proxy);
+			}
+			return adapterList;
+		}
 	}
+
+	/**
+	 * An adapter list implementation for {@link ResourceProxy} instances to ensure that {@link Adapter}
+	 * call-backs are invoked with the resource proxy that the adapters are added to, not the underlying real
+	 * resource.
+	 *
+	 * @author Christian W. Damus
+	 */
+	@SuppressWarnings("serial")
+	private class ProxyAdapterList extends DelegatingEList<Adapter> implements EObservableAdapterList {
+
+		// Map of "real adapter" <--> wrapper
+		private final BiMap<Adapter, Adapter> adapters = HashBiMap.create();
+
+		private final Notifier owner;
+
+		private final Notifier proxy;
+
+		private final EList<Adapter> delegate;
+
+		private List<Listener> listeners;
+
+		/**
+		 * Initializes me with the real resource {@link notifier} and its {@code proxy} that I present to
+		 * adapters in their call-backs.
+		 * 
+		 * @param notifier
+		 *            the real notifier
+		 * @param proxy
+		 *            its proxy wrapper
+		 */
+		ProxyAdapterList(Notifier notifier, Notifier proxy) {
+			super();
+
+			owner = notifier;
+			this.proxy = proxy;
+			delegate = notifier.eAdapters();
+		}
+
+		@Override
+		protected List<Adapter> delegateList() {
+			return delegate;
+		}
+
+		@Override
+		protected boolean delegateContains(Object object) {
+			// The delegate list contains wrappers, not the real adapters
+			Object search = adapters.get(object);
+			return super.delegateContains(search == null ? object : search);
+		}
+
+		@Override
+		protected int delegateIndexOf(Object object) {
+			// The delegate list contains wrappers, not the real adapters.
+			// This is needed to support removal
+			Object search = adapters.get(object);
+			return super.delegateIndexOf(search == null ? object : search);
+		}
+
+		@Override
+		protected int delegateLastIndexOf(Object object) {
+			// The delegate list contains wrappers, not the real adapters.
+			// This is needed as counterpart to indexOf
+			Object search = adapters.get(object);
+			return super.delegateLastIndexOf(search == null ? object : search);
+		}
+
+		@Override
+		protected Adapter validate(int index, Adapter object) {
+			Adapter result = adapters.get(object);
+			if (result == null) {
+				result = new ProxyAdapter(object, owner, proxy);
+				adapters.put(object, result);
+			}
+
+			return result;
+		}
+
+		@Override
+		protected void didAdd(int index, Adapter newObject) {
+			if (listeners != null) {
+				for (Listener next : listeners) {
+					next.added(proxy, newObject);
+				}
+			}
+		}
+
+		@Override
+		protected void didRemove(int index, Adapter oldObject) {
+			if (listeners != null) {
+				for (Listener next : listeners) {
+					next.removed(proxy, oldObject);
+				}
+			}
+			adapters.inverse().remove(oldObject);
+		}
+
+		@Override
+		protected void didSet(int index, Adapter newObject, Adapter oldObject) {
+			didRemove(index, oldObject);
+			didAdd(index, newObject);
+		}
+
+		//
+		// EObservableAdapterList protocol
+		//
+
+		public void addListener(Listener listener) {
+			if (listeners == null) {
+				listeners = Lists.newArrayListWithExpectedSize(1);
+			}
+			listeners.add(listener);
+		}
+
+		public void removeListener(Listener listener) {
+			if (listeners != null) {
+				listeners.remove(listener);
+			}
+		}
+	}
+
+	//
+	// Nested types
+	//
+
+	/**
+	 * An wrapper for adapters to ensure that the {@link Adapter} call-backs are invoked with the notifier
+	 * proxy that the adapters are added to, not the underlying real notifier.
+	 *
+	 * @author Christian W. Damus
+	 */
+	private class ProxyAdapter extends AdapterImpl {
+		private final Adapter delegate;
+
+		private final Notifier notifier;
+
+		private final Notifier proxy;
+
+		/** Cache of notification wrappers for presentation of the notifier as the proxy. */
+		private final Map<Notification, Notification> notificationWrappers = new MapMaker().weakKeys()
+				.weakValues().makeMap();
+
+		/**
+		 * Initializes me with the real resource {@link notifier} and its {@code proxy} that I present to my
+		 * wrapper {@link adapter} in its call-backs.
+		 * 
+		 * @param adapter
+		 *            my real adapter delegate
+		 * @param notifier
+		 *            the real notifier
+		 * @param proxy
+		 *            its proxy wrapper
+		 */
+		ProxyAdapter(Adapter adapter, Notifier notifier, Notifier proxy) {
+			super();
+
+			delegate = adapter;
+			this.notifier = notifier;
+			this.proxy = proxy;
+		}
+
+		@Override
+		public void notifyChanged(Notification msg) {
+			delegate.notifyChanged(wrap(msg));
+		}
+
+		Notification wrap(Notification msg) {
+			Notification result = msg;
+
+			if (msg.getNotifier() == notifier) {
+				// Wrap it
+				result = notificationWrappers.get(msg);
+				if (result == null) {
+					result = new NotificationWrapper(proxy, msg);
+					notificationWrappers.put(msg, result);
+				}
+			}
+
+			return result;
+		}
+
+		@Override
+		public boolean isAdapterForType(Object type) {
+			return delegate.isAdapterForType(type);
+		}
+
+		@Override
+		public void setTarget(Notifier newTarget) {
+			if (newTarget == notifier) {
+				delegate.setTarget(proxy);
+			} else {
+				delegate.setTarget(newTarget);
+			}
+		}
+
+		@Override
+		public void unsetTarget(Notifier oldTarget) {
+			if (delegate instanceof Adapter.Internal) {
+				if (oldTarget == notifier) {
+					((Adapter.Internal)delegate).unsetTarget(proxy);
+				} else {
+					((Adapter.Internal)delegate).unsetTarget(oldTarget);
+				}
+			}
+		}
+
+		@Override
+		public String toString() {
+			return delegate.toString();
+		}
+	}
+
 }
