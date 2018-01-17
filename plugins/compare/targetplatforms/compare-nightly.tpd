@@ -39,12 +39,12 @@ location xwt "http://download.eclipse.org/xwt/updates" {
  * Search all references to emf-compare.p2.repo
  */
 location emfCompare "http://download.eclipse.org/modeling/emf/compare/updates/logical/emf.compare/nightly/latest/" {
-	org.eclipse.emf.compare.feature.group lazy
-	org.eclipse.emf.compare.diagram.gmf.feature.group lazy
-	org.eclipse.emf.compare.uml2.feature.group lazy
-	org.eclipse.emf.compare.egit.feature.group lazy
-	org.eclipse.emf.compare.ide.ui.feature.group lazy
-	org.eclipse.emf.compare.rcp.ui.feature.group lazy
+	org.eclipse.emf.compare.source.feature.group lazy
+	org.eclipse.emf.compare.diagram.gmf.source.feature.group lazy
+	org.eclipse.emf.compare.uml2.source.feature.group lazy
+	org.eclipse.emf.compare.egit.source.feature.group lazy
+	org.eclipse.emf.compare.ide.ui.source.feature.group lazy
+	org.eclipse.emf.compare.rcp.ui.source.feature.group lazy
 }
 
 location orbit "http://download.eclipse.org/tools/orbit/downloads/drops/R20170307180635/repository" {

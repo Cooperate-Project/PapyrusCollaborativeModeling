@@ -185,16 +185,6 @@
 						<goals>
 							<goal>source-feature</goal>
 						</goals>
-						<configuration>
-							<excludes>
-								<feature id="org.eclipse.emf.compare" />
-								<feature id="org.eclipse.emf.compare.diagram.gmf" />
-								<feature id="org.eclipse.emf.compare.egit" />
-								<feature id="org.eclipse.emf.compare.ide.ui" />
-								<feature id="org.eclipse.emf.compare.rcp.ui" />
-								<feature id="org.eclipse.emf.compare.uml2" />
-							</excludes>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>

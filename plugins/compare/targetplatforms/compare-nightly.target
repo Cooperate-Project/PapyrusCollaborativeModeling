@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Compare Target Platform - Nightly" sequenceNumber="1514940783">
+<target name="Compare Target Platform - Nightly" sequenceNumber="1516204258">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.platform.feature.group" version="0.0.0"/>
@@ -34,12 +34,12 @@
       <repository id="xwt" location="http://download.eclipse.org/xwt/updates"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.emf.compare.feature.group" version="0.0.0"/>
-      <unit id="org.eclipse.emf.compare.diagram.gmf.feature.group" version="0.0.0"/>
-      <unit id="org.eclipse.emf.compare.uml2.feature.group" version="0.0.0"/>
-      <unit id="org.eclipse.emf.compare.egit.feature.group" version="0.0.0"/>
-      <unit id="org.eclipse.emf.compare.ide.ui.feature.group" version="0.0.0"/>
-      <unit id="org.eclipse.emf.compare.rcp.ui.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.emf.compare.source.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.emf.compare.diagram.gmf.source.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.emf.compare.uml2.source.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.emf.compare.egit.source.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.emf.compare.ide.ui.source.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.emf.compare.rcp.ui.source.feature.group" version="0.0.0"/>
       <repository id="emfCompare" location="http://download.eclipse.org/modeling/emf/compare/updates/logical/emf.compare/nightly/latest/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
