@@ -279,6 +279,7 @@ public class ReviewsEditor extends ViewPart implements ITabbedPropertySheetPageC
 		viewer.setInput(reviewResourceManager.getCurrentReviewModel());
 		reviewResourceManager.getDomain().addResourceSetListener(getResourceListener());
 		reviewResourceManager.startModeRevision();
+		reviewResourceManager.getCurrentAuthor();
 	}
 	/**
 	 * stop the model revision and load review model in the editor
@@ -288,6 +289,12 @@ public class ReviewsEditor extends ViewPart implements ITabbedPropertySheetPageC
 		reviewResourceManager.getDomain().addResourceSetListener(getResourceListener());
 		reviewResourceManager.stopModelRevision();
 		
+	}
+	/**
+	 * @return true if the mode revision is running.
+	 */
+	public boolean modeRevisionIsRunning() {
+		return reviewResourceManager.modeRevisionRunning();
 	}
 	/**
 	 * Retrieves the {@link IPropertySheetPage} that his Model Explorer uses.
