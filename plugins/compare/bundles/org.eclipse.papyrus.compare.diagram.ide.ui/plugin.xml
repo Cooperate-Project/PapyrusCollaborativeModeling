@@ -146,7 +146,7 @@
             fileExtension="sash">
       </fileExtensionModelInclusionTester>
       <dynamicModelInclusionTester
-            dynamicTester="org.eclipse.emf.compare.diagram.ide.ui.papyrus.internal.logical.InternationalizationFileInclusionTester">
+            dynamicTester="org.eclipse.papyrus.compare.diagram.ide.ui.internal.logical.InternationalizationFileInclusionTester">
       </dynamicModelInclusionTester>
    </extension>
 </plugin>
