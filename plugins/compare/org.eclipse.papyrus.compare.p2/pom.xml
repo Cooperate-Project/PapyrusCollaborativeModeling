@@ -12,6 +12,13 @@
 	<version>0.7.0-SNAPSHOT</version>
 	<packaging>eclipse-repository</packaging>
 
+	<properties>
+		<update.site.name>Papyrus Compare</update.site.name>
+		<update.site.description>Installable Build</update.site.description>
+		<update.site.version>0.7.0.${buildQualifier}</update.site.version>
+		<target.eclipse.version>Oxygen</target.eclipse.version>
+	</properties>
+
 	<pluginRepositories>
 		<pluginRepository>
 			<id>jboss-public-repository-group</id>
@@ -40,11 +47,23 @@
 				<version>1.0.0</version>
 				<executions>
 					<execution>
+						<id>generate-facade</id>
 						<phase>package</phase>
 						<goals>
 							<goal>generate-repository-facade</goal>
 						</goals>
 						<configuration>
+							<!-- Contains the template for the generated HTML index page -->
+							<siteTemplateFolder>site/template/</siteTemplateFolder>
+							
+							<!-- configuration options for the generated HTML index page -->
+							<symbols>
+								<update.site.name>${update.site.name}</update.site.name>
+								<update.site.description>${update.site.description}</update.site.description>
+								<update.site.version>${update.site.version}</update.site.version>
+								<target.eclipse.version>${target.eclipse.version}</target.eclipse.version>
+							</symbols>
+
 							<associateSites>
 								<associateSite>${emf-compare.p2.repo}</associateSite>
 								<associateSite>${egit.p2.repo}</associateSite>
