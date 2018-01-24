@@ -829,8 +829,8 @@ If the modification is not accepted, the adding or deletion or the set is not ap
           <packagedElement xmi:type="uml:Package" xmi:id="_xQ6Hh4UnEeSVSpmUeqlzmw" name="org.eclipse.papyrus.views.properties.runtime"/>
           <packagedElement xmi:type="uml:Package" xmi:id="_xQ6HiYUnEeSVSpmUeqlzmw" name="org.eclipse.papyrus.views.properties.storage"/>
           <packagedElement xmi:type="uml:Package" xmi:id="_xQ6Hi4UnEeSVSpmUeqlzmw" name="org.eclipse.papyrus.views.properties.util"/>
-          <packagedElement xmi:type="uml:Package" xmi:id="_xRD4gYUnEeSVSpmUeqlzmw" name="org.eclipse.papyrus.views.properties.widgets"/>
-          <packagedElement xmi:type="uml:Package" xmi:id="_xRD4g4UnEeSVSpmUeqlzmw" name="org.eclipse.papyrus.views.properties.widgets.layout"/>
+          <packagedElement xmi:type="uml:Package" xmi:id="_xRD4gYUnEeSVSpmUeqlzmw" name="org.eclipse.papyrus.infra.properties.ui.widgets"/>
+          <packagedElement xmi:type="uml:Package" xmi:id="_xRD4g4UnEeSVSpmUeqlzmw" name="org.eclipse.papyrus.infra.properties.ui.widgets"/>
           <packagedElement xmi:type="uml:Package" xmi:id="_xRD4hYUnEeSVSpmUeqlzmw" name="org.eclipse.papyrus.views.properties.xwt"/>
         </packagedElement>
         <packagedElement xmi:type="uml:Component" xmi:id="_xRNpjoUnEeSVSpmUeqlzmw" name="org.eclipse.papyrus.emf.facet.util.emf.core">
