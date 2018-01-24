@@ -253,7 +253,7 @@ public class ReviewResourceManager {
 			final Model reviewModel=getCurrentReviewModel();
 			NamedElement author=reviewModel.getPackagedElement(authorName);
 			if( author==null||!(author instanceof Actor)){
-				RecordingCommand cmd= new RecordingCommand(getDomain(), "createReviewModel") {
+				final RecordingCommand cmd= new RecordingCommand(getDomain(), "createReviewModel") {
 					@Override
 					protected void doExecute() {
 						currentAuthor=UMLFactory.eINSTANCE.createActor();
@@ -267,7 +267,9 @@ public class ReviewResourceManager {
 						currentAuthor.setValue(authorStereotype, I_VersioningStereotype.AUTHOR_COLOR_ATT, colorString);
 					}
 				};
-				getDomain().getCommandStack().execute(cmd);
+						getDomain().getCommandStack().execute(cmd);
+
+				
 			}
 			else{
 				currentAuthor=(Actor)author;
