@@ -15,11 +15,12 @@ package org.eclipse.papyrus.compare.diagram.tests.egit;
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.any;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.notNullValue;
 
 import java.io.File;
 
@@ -27,27 +28,31 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.uml2.uml.Model;
 import org.eclipse.uml2.uml.Package;
+import org.eclipse.uml2.uml.Type;
 import org.eclipse.uml2.uml.UMLPackage;
 
 /**
- * Tests the renaming of a UML Package sub-model that has internal changes on another branch. This scenario
- * contains two diagrams, one for the root of the model and another for the extracted package.
+ * Tests the renaming of a UML Package sub-model that has stereotyped elements moved out of it on another
+ * branch. This scenario contains two diagrams, one for the root of the model and another for the extracted
+ * package.
  * <dl>
  * <dt>Origin:</dt>
- * <dd>A class diagram in the root model showing a package containing a class. This package is a sub-model
- * unit that has its own diagram showing the content of the package, being the class.</dd>
+ * <dd>A class diagram in the root model showing a package containing a class and two other stereotyped
+ * elements. This package is a sub-model unit that has its own diagram showing the content of the package,
+ * being the class and those stereotyped elements.</dd>
  * <dt>Left:</dt>
- * <dd>The one class in the sub-model unit is renamed and another class added in the package. The layout of
- * both classes in the sub-model unit's diagram is changed.</dd>
+ * <dd>The two stereotype elements are moved out of the sub-unit package into the root package. The layout of
+ * both diagrams is changed: in the root package to move the two shapes out of the nested package shape, and
+ * in the sub-unit package's diagram to delete the shapes for the two elements.</dd>
  * <dt>Right:</dt>
  * <dd>The sub-model unit package is renamed, along with all of the sub-unit resources to match the new
  * package name.</dd>
  * </dl>
  */
 @SuppressWarnings("nls")
-public class ResourceAttachmentChangeRename1GitMergeTest extends AbstractGitMergeTestCase {
+public class ResourceAttachmentChangeRename4GitMergeTest extends AbstractGitMergeTestCase {
 
-	private static final String TEST_SCENARIO_PATH = "testmodels/resourceattachmentchange/rename1/";
+	private static final String TEST_SCENARIO_PATH = "testmodels/resourceattachmentchange/rename4/";
 
 	private static final String SUBUNIT_UML = "Subunit1.uml";
 
@@ -100,8 +105,17 @@ public class ResourceAttachmentChangeRename1GitMergeTest extends AbstractGitMerg
 	}
 
 	private void checkLeftChanges(Package package_) {
-		assertThat(package_.getOwnedType("Foo"), notNullValue());
-		assertThat(package_.getOwnedType("Bar"), notNullValue());
+		final Model model = (Model)package_.getNestingPackage();
+		Type strings = model.getOwnedType("Strings");
+		assertThat(strings, stereotypedAs("Utility"));
+		assertThat(strings.getStereotypeApplications(), everyItem(storedIn(strings.eResource())));
+		Package jface = model.getNestedPackage("jface");
+		assertThat(jface, stereotypedAs("Framework"));
+		assertThat(jface.getStereotypeApplications(), everyItem(storedIn(jface.eResource())));
+
+		assertThat(package_.getOwnedTypes(), not(empty()));
+		assertThat(package_.getOwnedType("Strings"), nullValue());
+		assertThat(package_.getNestedPackage("jface"), nullValue());
 	}
 
 	private void checkRightChanges(Package package_) {

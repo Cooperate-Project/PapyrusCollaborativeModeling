@@ -46,8 +46,6 @@ import org.eclipse.uml2.uml.UMLPackage;
  * <dd>The sub-model unit package is renamed, along with all of the sub-unit resources to match the new
  * package name.</dd>
  * </dl>
- *
- * @author Philip Langer <planger@eclipsesource.com>
  */
 @SuppressWarnings("nls")
 public class ResourceAttachmentChangeRename3GitMergeTest extends AbstractGitMergeTestCase {

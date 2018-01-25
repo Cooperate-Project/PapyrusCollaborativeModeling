@@ -47,6 +47,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.util.FileUtils;
@@ -350,8 +351,18 @@ public abstract class AbstractGitMergeTestCase {
 		final Iterable<File> filesOfInterest = filter(getAllContainedFiles(workingDirectory),
 				and(IS_EXISTING_FILE, getFileOfInterestFilter()));
 		final Iterable<URI> urisOfInterest = transform(filesOfInterest, toUri());
+
+		// On different OS platforms and/or different computer systems, the order in
+		// which the files are gathered from the git working directory is variable.
+		// In case of sub-model units, be sure to resolve all proxies first, so that
+		// the unit linkages are available for test cases that expect to find them
 		for (URI uriOfInterest : urisOfInterest) {
-			final Resource resource = resourceSet.getResource(uriOfInterest, true);
+			resourceSet.getResource(uriOfInterest, true);
+		}
+		EcoreUtil.resolveAll(resourceSet);
+
+		for (URI uriOfInterest : urisOfInterest) {
+			final Resource resource = resourceSet.getResource(uriOfInterest, false);
 			validateResult(resource);
 		}
 	}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:standard="http://www.eclipse.org/uml2/5.0.0/UML/Profile/Standard" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML">
+  <uml:Package xmi:id="_3BK90GIREeWuYNIEaw6oIA" name="Package1">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_3s5ZEOqDEeeGNpM5WA6vzA" source="http://www.eclipse.org/papyrus/2016/resource/shard">
+      <references xmi:type="uml:Model" href="model.uml#_0lgMoGIREeWuYNIEaw6oIA"/>
+    </eAnnotations>
+    <packagedElement xmi:type="uml:Class" xmi:id="_Tvs-0GISEeWuYNIEaw6oIA" name="Class1"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="_WhDDgOsYEeeP1-vgK6VsNg" name="Strings"/>
+    <packagedElement xmi:type="uml:Package" xmi:id="_cr1x0OsYEeeP1-vgK6VsNg" name="jface"/>
+  </uml:Package>
+  <standard:Utility xmi:id="_YxA7AOsYEeeP1-vgK6VsNg" base_Class="_WhDDgOsYEeeP1-vgK6VsNg"/>
+  <standard:Framework xmi:id="_g1o4wOsYEeeP1-vgK6VsNg" base_Package="_cr1x0OsYEeeP1-vgK6VsNg"/>
+</xmi:XMI>

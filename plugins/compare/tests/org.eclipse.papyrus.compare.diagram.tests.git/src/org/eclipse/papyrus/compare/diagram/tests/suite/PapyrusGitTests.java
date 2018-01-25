@@ -28,6 +28,8 @@ import org.eclipse.papyrus.compare.diagram.tests.egit.ResourceAttachmentChangeDe
 import org.eclipse.papyrus.compare.diagram.tests.egit.ResourceAttachmentChangeRename1GitMergeTest;
 import org.eclipse.papyrus.compare.diagram.tests.egit.ResourceAttachmentChangeRename2GitMergeTest;
 import org.eclipse.papyrus.compare.diagram.tests.egit.ResourceAttachmentChangeRename3GitMergeTest;
+import org.eclipse.papyrus.compare.diagram.tests.egit.ResourceAttachmentChangeRename4GitMergeTest;
+import org.eclipse.papyrus.compare.diagram.tests.egit.ResourceAttachmentChangeRename5GitMergeTest;
 import org.eclipse.papyrus.compare.diagram.tests.egit.StereotypeApplicationsInSubunitsTest;
 import org.eclipse.papyrus.compare.diagram.tests.egit.StereotypeConflictTest;
 import org.eclipse.papyrus.compare.diagram.tests.egit.mergeresolution.MergeResolutionManagerTest;
@@ -57,6 +59,8 @@ import org.junit.runners.Suite.SuiteClasses;
 		ResourceAttachmentChangeRename1GitMergeTest.class, //
 		ResourceAttachmentChangeRename2GitMergeTest.class, //
 		ResourceAttachmentChangeRename3GitMergeTest.class, //
+		ResourceAttachmentChangeRename4GitMergeTest.class, //
+		ResourceAttachmentChangeRename5GitMergeTest.class, //
 })
 public class PapyrusGitTests {
 
