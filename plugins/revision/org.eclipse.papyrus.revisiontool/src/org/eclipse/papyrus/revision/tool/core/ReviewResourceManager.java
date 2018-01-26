@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2014, 2017 CEA LIST.
+ * Copyright (c) 2014, 2017-2018 CEA LIST.
  *
  *
  * All rights reserved. This program and the accompanying materials
@@ -15,11 +15,15 @@ package org.eclipse.papyrus.revision.tool.core;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.EventObject;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.emf.common.command.CommandStackListener;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.compare.CompareFactory;
 import org.eclipse.emf.compare.Comparison;
@@ -65,6 +69,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.dialogs.PatternFilter;
+import org.eclipse.ui.internal.wizards.NewWizardRegistry;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.uml2.uml.Actor;
@@ -94,6 +99,7 @@ public class ReviewResourceManager {
 	protected RefreshFigureListener refreshFigureListener=null;
 	protected Comparison diffModel=null;
 	protected boolean modeRevisionRunning=false;
+	private int commentSize;
 
 
 	/**
@@ -223,6 +229,54 @@ public class ReviewResourceManager {
 				cmt.applyStereotype(review);
 				cmt.setValue(review, I_ReviewStereotype.COMMENT_SUBJECT_ATT, "subject");
 
+				Stereotype authorStereotype= theauthor.getApplicableStereotype(I_VersioningStereotype.AUTHOR_STEREOTYPE);
+				cmt.setValue(review, I_VersioningStereotype.VERSIONINGELEMENT_AUTHOR_ATT, theauthor.getStereotypeApplication(authorStereotype));
+
+				// add tthe date
+				Date today = new Date();
+				DateFormat shortDateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
+				cmt.setValue(review, I_VersioningStereotype.VERSIONINGELEMENT_DATE_ATT, shortDateFormat.format(today));
+			}
+		};
+		getDomain().getCommandStack().execute(cmd);
+
+	}
+	
+	/**
+	 *  used to group a set of review under a new review from the index to the last
+	 *  @param element the container of the review
+	 *  @param index must be >0 
+	 */
+	private void groupReviews(final Element element, final int index){
+		getCurrentReviewModel();
+		final Actor theauthor=getCurrentAuthor();
+
+		RecordingCommand cmd= new RecordingCommand(getDomain(), "createAReview") {
+			@Override
+			protected void doExecute() {
+				ArrayList<Comment> subComments= new ArrayList<Comment>();
+				
+				for (int i=index; i<reviewModel.getOwnedComments().size();i++) {
+					subComments.add(reviewModel.getOwnedComments().get(i));
+				}
+				
+				Comment cmt= UMLFactory.eINSTANCE.createComment();
+				cmt.setBody("Your review");
+				if(element instanceof Comment ){
+					((Comment)element).getOwnedComments().add(cmt);
+				}
+				else{	reviewModel.getOwnedComments().add(cmt);}
+
+				Stereotype review= cmt.getApplicableStereotype(I_ReviewStereotype.TODO_STEREOTYPE);
+				cmt.applyStereotype(review);
+				cmt.setValue(review, I_ReviewStereotype.COMMENT_SUBJECT_ATT, "subject");
+
+				for (Iterator iterator = subComments.iterator(); iterator.hasNext();) {
+					Comment comment = (Comment) iterator.next();
+					cmt.getOwnedComments().add(comment);
+					
+				}
+				cmt.setBody(cmt.getOwnedComments().get(0).getBody());
 				Stereotype authorStereotype= theauthor.getApplicableStereotype(I_VersioningStereotype.AUTHOR_STEREOTYPE);
 				cmt.setValue(review, I_VersioningStereotype.VERSIONINGELEMENT_AUTHOR_ATT, theauthor.getStereotypeApplication(authorStereotype));
 
@@ -511,6 +565,7 @@ public class ReviewResourceManager {
 	 */
 	public void startModeRevision(){
 		modeRevisionRunning=true;
+
 		RecordingCommand cmd= new RecordingCommand(getDomain(), "savediff") {
 			@Override
 			protected void doExecute() {
@@ -527,6 +582,18 @@ public class ReviewResourceManager {
 		};
 		getDomain().getCommandStack().execute(cmd);
 		getDomain().addResourceSetListener(addingDiffListener);
+		getDomain().getCommandStack().addCommandStackListener(new CommandStackListener() {
+			
+			@Override
+			public void commandStackChanged(EventObject event) {
+				System.out.println("Command added "+commentSize);
+				int commentIndex=commentSize;
+				
+				groupReviews(getCurrentReviewModel(), commentIndex);
+				commentSize = getCurrentReviewModel().getOwnedComments().size();
+			}
+		});
+		commentSize = getCurrentReviewModel().getOwnedComments().size();
 	}
 	/**
 	 * stop the revision model and stop listening modifications

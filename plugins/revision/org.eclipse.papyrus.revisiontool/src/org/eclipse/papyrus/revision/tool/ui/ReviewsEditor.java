@@ -122,11 +122,12 @@ public class ReviewsEditor extends ViewPart implements ITabbedPropertySheetPageC
 	protected void filterContextMenu(IMenuManager mgr) {
 		IContributionItem[] contributionItems=mgr.getItems();
 		for (int i = 0; i < contributionItems.length; i++) {
-			if(!(contributionItems[i].getId().startsWith(ORG_ECLIPSE_PAPYRUS_REVISIONTOOL))){
-				mgr.remove(contributionItems[i]);
+			if(contributionItems[i].getId()!=null) {
+				if(!(contributionItems[i].getId().startsWith(ORG_ECLIPSE_PAPYRUS_REVISIONTOOL))){
+					mgr.remove(contributionItems[i]);
+				}
 			}
 		}
-
 	}
 
 	/**
@@ -288,7 +289,7 @@ public class ReviewsEditor extends ViewPart implements ITabbedPropertySheetPageC
 		viewer.setInput(reviewResourceManager.getCurrentReviewModel());
 		reviewResourceManager.getDomain().addResourceSetListener(getResourceListener());
 		reviewResourceManager.stopModelRevision();
-		
+
 	}
 	/**
 	 * @return true if the mode revision is running.
@@ -328,7 +329,7 @@ public class ReviewsEditor extends ViewPart implements ITabbedPropertySheetPageC
 			return super.getAdapter(adapter);
 		}
 	}
-	
+
 	@Override
 	public void setFocus() {
 
