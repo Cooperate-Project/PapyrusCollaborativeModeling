@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.eclipse.papyrus.revision.tool.advice;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.gmf.runtime.common.core.command.CompositeCommand;
 import org.eclipse.gmf.runtime.common.core.command.ICommand;
 import org.eclipse.gmf.runtime.common.core.command.IdentityCommand;
@@ -37,11 +38,15 @@ public class AdviceRemove extends AbstractEditHelperAdvice {
 	protected ICommand getAfterDestroyElementCommand(DestroyElementRequest request) {
 		final IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("org.eclipse.papyrus.revisiontool.commentview");
 		if (part instanceof ReviewsEditor) {
-			PreventRemoveCommand prc = new PreventRemoveCommand(request.getEditingDomain(), request.getElementToDestroy());
-			CompositeCommand compositeCommand = new CompositeCommand("remove");
-			compositeCommand.add(new EMFtoGMFCommandWrapper(prc));
-			// compositeCommand.add(UnexecutableCommand.INSTANCE);
-			return compositeCommand;
+			EObject origin= (EObject)request.getParameter(DestroyElementRequest.INITIAL_ELEMENT_TO_DESTROY_PARAMETER);
+			if(origin!=null && origin.equals(request.getElementToDestroy())) {
+				PreventRemoveCommand prc = new PreventRemoveCommand(request.getEditingDomain(), request.getElementToDestroy());
+				CompositeCommand compositeCommand = new CompositeCommand("remove");
+				compositeCommand.add(new EMFtoGMFCommandWrapper(prc));
+
+				// compositeCommand.add(UnexecutableCommand.INSTANCE);
+				return compositeCommand;
+			}
 		}
 		return IdentityCommand.INSTANCE;
 	}
