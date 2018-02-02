@@ -29,7 +29,7 @@ location "http://download.eclipse.org/egit/updates" EGit {
 //org.eclipse.ocl.examples.debug.vm.ui requires bundle org.eclipse.xtext.ui
 
 //manualUpdate
-location "https://hudson.eclipse.org/papyrus/job/Papyrus-Master-Developer/lastSuccessfulBuild/artifact/repository/" {
+location "https://hudson.eclipse.org/papyrus/job/Papyrus-Oxygen-Developer/lastSuccessfulBuild/artifact/repository/" {
 	org.eclipse.papyrus.junit.utils lazy
 	org.eclipse.papyrus.junit.framework lazy
 }
