@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Compare Target Platform - Release" sequenceNumber="1516204260">
+<target name="Compare Target Platform - Release" sequenceNumber="1520586845">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.platform.feature.group" version="4.7.2.v20171130-0510"/>
@@ -24,8 +24,8 @@
       <repository id="eclipse-oxygen" location="http://download.eclipse.org/releases/oxygen/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.egit.feature.group" version="4.10.0.201712302008-r"/>
-      <unit id="org.eclipse.jgit.feature.group" version="4.10.0.201712302008-r"/>
+      <unit id="org.eclipse.egit.feature.group" version="4.11.0.201803080745-r"/>
+      <unit id="org.eclipse.jgit.feature.group" version="4.11.0.201803080745-r"/>
       <repository id="egit" location="http://download.eclipse.org/egit/updates"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">

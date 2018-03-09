@@ -33,5 +33,4 @@ location sysml "https://hudson.eclipse.org/papyrus/job/papyrus-sysml-oxygen/last
 
 location emfCompare "http://download.eclipse.org/modeling/emf/compare/updates/logical/emf.compare/integration/" {
 	org.eclipse.emf.compare.tests.source.feature.group lazy
-	org.eclipse.emf.compare.uml2.source.feature.group lazy
 }

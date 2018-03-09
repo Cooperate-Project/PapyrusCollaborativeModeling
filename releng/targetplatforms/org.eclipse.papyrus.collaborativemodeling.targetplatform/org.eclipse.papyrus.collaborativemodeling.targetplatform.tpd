@@ -81,7 +81,7 @@ location ocl "http://download.eclipse.org/modeling/mdt/ocl/updates/releases/6.3.
 }
 
 //updateFrom ("WebTools",0)
-location webtools "http://download.eclipse.org/webtools/downloads/drops/R3.9.2/R-3.9.2-20171201000141/repository/" {
+location webtools "http://download.eclipse.org/webtools/downloads/drops/R3.9.3/S-3.9.3RC4-20180302093744/repository/" {
  org.eclipse.wst.xml_ui.feature.feature.group lazy
  org.eclipse.wst.common.fproj.feature.group lazy
  org.eclipse.wst.server_ui.feature.feature.group lazy
