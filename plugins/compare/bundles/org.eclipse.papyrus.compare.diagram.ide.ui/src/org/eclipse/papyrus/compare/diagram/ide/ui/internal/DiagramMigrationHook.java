@@ -13,6 +13,7 @@ package org.eclipse.papyrus.compare.diagram.ide.ui.internal;
 
 import static java.lang.String.format;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -57,13 +58,12 @@ public class DiagramMigrationHook extends AbstractPapyrusResourceSetHook {
 
 	@Override
 	public void postLoadingHook(ResourceSet resourceSet, Collection<? extends URI> uris) {
-		for (Resource resource : resourceSet.getResources()) {
+		for (Resource resource : new ArrayList<Resource>(resourceSet.getResources())) {
 			if (NotationModel.NOTATION_FILE_EXTENSION.equals(resource.getURI().fileExtension())) {
 				EList<EObject> contents = resource.getContents();
 				for (EObject object : contents) {
 					if (object instanceof Diagram) {
 						Diagram diagram = (Diagram)object;
-
 						IDGenerator idgen = new IDGenerator(diagram);
 						try {
 							migrateDiagram(getEditingDomain(resourceSet), diagram);

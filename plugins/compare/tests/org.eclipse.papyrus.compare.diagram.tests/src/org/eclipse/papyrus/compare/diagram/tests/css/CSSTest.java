@@ -38,7 +38,7 @@ public class CSSTest extends AbstractTest {
 	private final CSSInputData input = new CSSInputData();
 
 	/**
-	 * Verify that Papyrusfinds the correct view prototype for the compared diagrams.
+	 * Verify that Papyrus finds the correct view prototype for the compared diagrams.
 	 */
 	@Test
 	public void viewPrototype() throws IOException {
@@ -53,10 +53,6 @@ public class CSSTest extends AbstractTest {
 		assertThat("View prototype not found", proto.isUnavailable(), is(false));
 		assertThat(proto.getRepresentationKind().getId(), containsString("sysml14"));
 	}
-
-	//
-	// Test framework
-	//
 
 	@Override
 	protected DiagramInputData getInput() {
