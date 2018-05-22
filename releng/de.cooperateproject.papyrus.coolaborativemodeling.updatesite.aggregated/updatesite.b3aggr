@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aggregator:Aggregation xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:aggregator="http://www.eclipse.org/b3/2011/aggregator/1.1.0" label="Papyrus Collaborative Modeling" buildRoot="target">
+  <validationSets label="main">
+    <contributions label="local">
+      <repositories location="../org.eclipse.papyrus.collaborativemodeling.p2/target/repository"/>
+    </contributions>
+    <contributions label="externals">
+      <repositories location="http://download.eclipse.org/releases/oxygen/" mirrorArtifacts="false">
+        <features name="org.eclipse.emf.cdo.sdk.feature.group"/>
+      </repositories>
+      <repositories location="http://download.eclipse.org/modeling/mdt/papyrus/updates/releases/oxygen" mirrorArtifacts="false">
+        <features name="org.eclipse.papyrus.sdk.feature.feature.group"/>
+        <features name="org.eclipse.papyrus.toolsmiths.feature.feature.group"/>
+      </repositories>
+    </contributions>
+  </validationSets>
+  <configurations/>
+  <configurations architecture="x86_64"/>
+  <configurations operatingSystem="linux" windowSystem="gtk"/>
+  <configurations operatingSystem="linux" windowSystem="gtk" architecture="x86_64"/>
+  <configurations operatingSystem="macosx" windowSystem="cocoa" architecture="x86_64"/>
+</aggregator:Aggregation>
